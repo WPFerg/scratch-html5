@@ -1,23 +1,32 @@
 <!DOCTYPE html>
-<meta charset=utf-8>
+<html style="width: 100%; height: 100%;" manifest='/manifest/<%= projectId %>/cache.manifest'>
 <title>Scratch HTML5</title>
+<head>
+    <meta charset=utf-8>
 
-<!-- iPad properties: set width, disable pinch zoom -->
-<meta name=apple-mobile-web-app-capable content=yes>
-<meta name=viewport content="user-scalable=no, width=540">
-<meta name=apple-mobile-web-app-status-bar-style content=black>
+    <!-- iPad properties: set width, disable pinch zoom -->
+    <link rel="icon" sizes="196x196" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_196x196.png">
+    <link rel="icon" sizes="128x128" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_128x128.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-<link rel=stylesheet href=player.css>
-<link rel=stylesheet href=index.css>
+    <!-- iPad properties: set width, disable pinch zoom -->
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name="viewport" content="user-scalable=no,minimal-ui">
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
 
-<script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js></script>
+    <link rel=stylesheet href=player.css>
+    <link rel=stylesheet href=index.css>
 
+    <script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js></script>
+
+    <script> var projectId = "<%= projectId %>"; </script>
 
 <script type="text/javascript">
   $(document).ready(function() {
-    var project_id = location.hash && parseInt(location.hash.substr(1)) || 10000160;
-    var scratch = new Scratch(project_id);
-  });
+    var project_id = projectId || location.hash && parseInt(location.hash.substr(1)) || 10000160;
+    new Scratch(project_id);
+  };
 </script>
 
 <div id=player-container>

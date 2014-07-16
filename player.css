@@ -2,16 +2,31 @@
    all CSS selectors would be descendants of #wrapper so that the player
    is embeddable.
 */
-#player-container {
-    position: relative;
-    width: 482px;
-    padding: 48px;
-    margin: 0 auto;
+
+#player-container
+{
+    /*position: relative;*/
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    /*min-width: 480;
+    min-height: 360;*/
+        width: 482px;
+        height: 360px;
+    /*margin: auto;*/
+    /*margin: 0px;*/
+
+    padding: 0;
+    margin: 0;
+    border: 0;
+
     font-family: sans-serif;
+
     /* Before, we accomplished this with e.preventDefault
      * on the context div.  But, we'd like to use those click events
      * for some things like reporter sliders.
      */
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -20,99 +35,57 @@
     user-select: none;
 }
 
-/*  Control bar above the stage */
-#player-header {
-    width: 480px;
-    height: 38px;
-    position: relative;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6));
-    background: -webkit-linear-gradient(#fff, #e6e6e6);
-    background: -moz-linear-gradient(#fff, #e6e6e6);
-    background: -ms-linear-gradient(#fff, #e6e6e6);
-    background: -o-linear-gradient(#fff, #e6e6e6);
-    background: linear-gradient(#fff, #e6e6e6);
-    border: 1px solid #d1d1d1;
-    border-bottom: 0;
-    border-radius: 7px 7px 0 0;
-}
-
-/* Button styling */
-#player-header button {
-    border: 0;
-    background: center center no-repeat;
-    width: 33px;
-    height: 38px;
-    float: right;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-#player-header-preload {
-    width: 1px;
-    height: 1px;
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    background: url(img/fullScreenOn.png), url(img/greenFlagOn.png), url(img/stopOn.png);
-}
-button#toggle-fullscreen {
-    background-image: url(img/fullScreenOff.png);
-    background-position: 10px 8px;
-    width: 40px;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-button#trigger-green-flag {
+#trigger-green-flag
+{
     background-image: url(img/greenFlagOff.png);
+    background-repeat:
+    no-repeat;
+    background-size: 100%;
+    position: absolute;
+    min-width: 40px;
+    min-height: 40px;
+    z-index: 10001;
 }
-button#trigger-green-flag:hover {
+#trigger-green-flag:hover
+{
     background-image: url(img/greenFlagOn.png);
 }
-button#trigger-stop {
+#trigger-stop
+{
     background-image: url(img/stopOff.png);
+    background-repeat:
+    no-repeat;
+    background-size: 100%;
+    position: absolute;
+    min-width: 40px;
+    min-height: 40px;
+    z-index: 10001;
 }
-button#trigger-stop:hover {
+#trigger-stop:hover
+{
     background-image: url(img/stopOn.png);
 }
 
-/* Version number */
-#player-header-version {
-    position: absolute;
-    top: 28px;
-    left: 0;
-    width: 45px;
-    text-align: center;
-    color: rgba(0, 0, 0, .4);
-    font: 9px sans-serif;
-}
-
-/* Wrapper for the Stage */
-#player-content {
-    position: relative;
-    border: 1px solid #d1d1d1;
-    border-top: 0;
-    width: 480px;
-    height: 360px;
-}
-
 /* The Stage */
-#container {
+#container
+{
     position: absolute;
     top: 0;
     left: 0;
-    width: 480px;
-    height: 360px;
+        width: 480px;
+        height: 360px;
     cursor: default;
     overflow: hidden;
 }
 
 /* Pane over the Stage with the green flag on startup */
-#overlay {
+#overlay
+{
     position: absolute;
     top: 0;
     left: 0;
-    width: 480px;
-    height: 360px;
+        width: 480px;
+        height: 360px;
     z-index: 10000;
     background: url(img/playerStartFlag.png) rgba(0, 0, 0, .26) center center no-repeat;
 }

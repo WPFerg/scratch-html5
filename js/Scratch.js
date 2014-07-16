@@ -89,12 +89,13 @@ function Scratch(project_id) {
     // Canvas container mouse events
     $('#container').mousedown(function(e) {
         runtime.mouseDown = true;
-        //e.preventDefault();
+        // Stop iOS scrolling
+        e.preventDefault();
     });
 
     $('#container').mouseup(function(e) {
         runtime.mouseDown = false;
-        //e.preventDefault();
+        e.preventDefault();
     });
 
     $('#container').mousemove(function(e) {

@@ -144,6 +144,6 @@ AdjustForOrientation();
 // Add event and link to event method
 window.addEventListener("resize", AdjustForOrientation, false);
 
-// Bind touch events to html
-$('body').bind('touchstart', function(Event) { Event.preventDefault(); });
-$('body').bind('touchmove', function(Event) { Event.preventDefault(); });
+// Stop iOS Scrolling
+$("#preloader").bind("touchstart", function(e) { e.preventDefault(); });
+$("#preloader").bind("touchend", function(e) { e.preventDefault(); });

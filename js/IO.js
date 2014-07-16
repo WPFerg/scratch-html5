@@ -52,18 +52,21 @@ IO.prototype.soundRequest = function(sound, sprite) {
     request.open('GET', this.asset_base + sound['md5'] + this.asset_suffix, true);
     request.responseType = 'arraybuffer';
     request.onload = function() {
-        var waveData = request.response;
-        // Decode the waveData and populate a buffer channel with the samples
-        var snd = new SoundDecoder(waveData);
-        var samples = snd.getAllSamples();
-        sound.buffer = runtime.audioContext.createBuffer(1, samples.length, runtime.audioContext.sampleRate);
-        var data = sound.buffer.getChannelData(0);
-        for (var i = 0; i < data.length; i++) {
-            data[i] = samples[i];
+        if(!!request.response)
+        {
+            var waveData = request.response;
+            // Decode the waveData and populate a buffer channel with the samples
+            var snd = new SoundDecoder(waveData);
+            var samples = snd.getAllSamples();
+            sound.buffer = runtime.audioContext.createBuffer(1, samples.length, runtime.audioContext.sampleRate);
+            var data = sound.buffer.getChannelData(0);
+            for (var i = 0; i < data.length; i++) {
+                data[i] = samples[i];
+            }
         }
-        sprite.soundsLoaded++;
     };
     request.send();
+    sprite.soundsLoaded++;
 };
 
 IO.prototype.loadNotesDrums = function() {
@@ -72,16 +75,19 @@ IO.prototype.loadNotesDrums = function() {
         var request = new XMLHttpRequest();
         request.open('GET', self.soundbank_base + escape(file), true);
         request.responseType = 'arraybuffer';
-        request.onload = function() {
-            var waveData = new OffsetBuffer(request.response);
-            // Decode the waveData and populate a buffer channel with the samples
-            var info = WAVFile.decode(request.response);
-            waveData.offset = info.sampleDataStart;
-            var soundBuffer = waveData.readBytes(2 * info.sampleCount);
-            Instr.samples[name] = soundBuffer;
-            Instr.wavsLoaded++;
+        request.onload = function() { 
+            if(!!request.response)
+            {
+                var waveData = new OffsetBuffer(request.response);
+                // Decode the waveData and populate a buffer channel with the samples
+                var info = WAVFile.decode(request.response);
+                waveData.offset = info.sampleDataStart;
+                var soundBuffer = waveData.readBytes(2 * info.sampleCount);
+                Instr.samples[name] = soundBuffer;
+            }
         };
         request.send();
+        Instr.wavsLoaded++;
     });
 };
 

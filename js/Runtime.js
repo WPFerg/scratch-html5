@@ -66,6 +66,7 @@ Runtime.prototype.loadStart = function() {
             }
         }
     }
+    // this may need to be disabled for iPad loading to work
     if (Instr.wavsLoaded != Instr.wavCount) {
         setTimeout(function(runtime) { runtime.loadStart(); }, 50, this);
         return;

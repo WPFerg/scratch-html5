@@ -1,84 +1,91 @@
 <!DOCTYPE html>
-<html style="width: 100%; height: 100%;" manifest='/manifest/<%= projectId %>/cache.manifest'>
-<title>Scratch HTML5</title>
-<head>
-    <meta charset=utf-8>
+<html style="width: 100%; height: 100%;" Tmanifest='/manifest/<%= projectId %>/cache.manifest'>
+    <head>
 
-    <!-- iPad properties: set width, disable pinch zoom -->
-    <link rel="icon" sizes="196x196" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_196x196.png">
-    <link rel="icon" sizes="128x128" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_128x128.png">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <!-- Browser setup tags -->
+        <meta charset=utf-8>
+        <title>Scratch HTML5</title>
 
-    <!-- iPad properties: set width, disable pinch zoom -->
-    <meta name=apple-mobile-web-app-capable content=yes>
-    <meta name="viewport" content="user-scalable=no,minimal-ui">
-    <meta name=apple-mobile-web-app-status-bar-style content=black>
+        <!-- iPad properties: set width, disable pinch zoom -->
+        <link rel="icon" sizes="196x196" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_196x196.png">
+        <link rel="icon" sizes="128x128" href="http://cdn2.scratch.mit.edu/get_image/project/<%= projectId %>_128x128.png">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <link rel=stylesheet href=player.css>
-    <link rel=stylesheet href=index.css>
+        <!-- Scaling and scale setup meta-tags -->
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui" />
 
-    <script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js></script>
+        <!-- Link style sheets -->
+        <link rel=stylesheet href=player.css>
+        <link rel=stylesheet href=index.css>
 
-    <script> var projectId = "<%= projectId %>"; </script>
+        <!-- Import JQuery -->
+        <script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js></script>
 
-<script type="text/javascript">
-  $(document).ready(function() {
-    var project_id = projectId || location.hash && parseInt(location.hash.substr(1)) || 10000160;
-    new Scratch(project_id);
-  )};
-</script>
+    </head>
+    <body>
 
-<div id=player-container>
-    <div class="arrow vertical" id=up></div>
-    <div class="arrow vertical" id=down></div>
-    <div class="arrow horizontal" id=left></div>
-    <div class="arrow horizontal" id=right></div>
-    <div id=player-header>
-        <div id=player-header-preload></div>
-        <div id=player-header-version>HTML5</div>
-        <button id=toggle-fullscreen tabindex=1></button>
-        <button id=trigger-stop tabindex=3></button>
-        <button id=trigger-green-flag tabindex=2></button>
-    </div>
-    <div id=player-content>
-        <div id=container></div>
-        <div id=overlay></div>
-        <div id=preloader>
-            <div id=preloader-progress><div id=preloader-progress-bar></div></div>
-            <div id=preloader-caption>Loading project&hellip;</div>
-            <div id=preloader-details></div>
+        <script type="text/javascript">
+
+            // Wills addition to set ID
+            var projectId = "<%= projectId %>"; 
+
+            // Retrieve project ID
+            $(document).ready(function()
+            {
+                var project_id = projectId || location.hash && parseInt(location.hash.substr(1)) || 10000160;
+                new Scratch(project_id);
+            });
+
+        </script>
+
+        <!-- User flags -->
+        <div id="trigger-stop" tabindex="3"></div>
+        <div id="trigger-green-flag" tabindex="2"></div>
+
+        <!-- Proloader elements -->
+        <div id="preloader">
+            <div id="preloader-progress"><div id="preloader-progress-bar"></div></div>
+            <div id="preloader-caption">Loading project&hellip;</div>
+            <div id="preloader-details"></div>
         </div>
-    </div>
-</div>
 
-<div id=project-picker>
-    <span id=address-hint>http://scratch.mit.edu/projects/</span><input id=project-id placeholder=10000160><button id=go-project>&rarr;</button>
-</div>
+        <!-- Actual player elements -->
+        <div id="player-container">
+            <div id="container"></div>
+            <div id="overlay"></div>
+        </div>
 
-<h1>Scratch HTML5 player</h1>
-<p>The Scratch HTML5 player is still in development. Feedback is welcome! Please report any bugs (or differences from the Flash player) <a href=https://github.com/LLK/scratch-html5>on Github</a>.</p>
+        <!-- Import Scott Logic files -->
+        <script src="js/SLScratch.js"></script>
 
-<script src=js/util/Timer.js></script>
-<script src=js/util/OffsetBuffer.js></script>
-<script src=js/util/Color.js></script>
-<script src=js/util/Rectangle.js></script>
-<script src=js/Sprite.js></script>
-<script src=js/Reporter.js></script>
-<script src=js/Stage.js></script>
-<script src=js/sound/WAVFile.js></script>
-<script src=js/sound/SoundDecoder.js></script>
-<script src=js/sound/SoundBank.js></script>
-<script src=js/sound/NotePlayer.js></script>
-<script src=soundbank/Instr.js></script>
-<script src=js/IO.js></script>
-<script src=js/primitives/VarListPrims.js></script>
-<script src=js/primitives/MotionAndPenPrims.js></script>
-<script src=js/primitives/LooksPrims.js></script>
-<script src=js/primitives/SensingPrims.js></script>
-<script src=js/primitives/SoundPrims.js></script>
-<script src=js/primitives/Primitives.js></script>
-<script src=js/Interpreter.js></script>
-<script src=js/Runtime.js></script>
-<!-- <script src=js/Scratch.js></script> -->
-<script type="text/JavaScript" src="js/Scratch.js"></script> 
+        <!-- Import javascript files -->
+        <script src="js/util/Timer.js"></script>
+        <script src="js/util/OffsetBuffer.js"></script>
+        <script src="js/util/Color.js"></script>
+        <script src="js/util/Rectangle.js"></script>
+        <script src="js/Sprite.js"></script>
+        <script src="js/Reporter.js"></script>
+        <script src="js/Stage.js"></script>
+        <script src="js/sound/WAVFile.js"></script>
+        <script src="js/sound/SoundDecoder.js"></script>
+        <script src="js/sound/SoundBank.js"></script>
+        <script src="js/sound/NotePlayer.js"></script>
+        <script src="soundbank/Instr.js"></script>
+        <script src="js/IO.js"></script>
+        <script src="js/primitives/VarListPrims.js"></script>
+        <script src="js/primitives/MotionAndPenPrims.js"></script>
+        <script src="js/primitives/LooksPrims.js"></script>
+        <script src="js/primitives/SensingPrims.js"></script>
+        <script src="js/primitives/SoundPrims.js"></script>
+        <script src="js/primitives/Primitives.js"></script>
+        <script src="js/Interpreter.js"></script>
+        <script src="js/Runtime.js"></script>
+        <!-- <script src="js/AppCache.js"></script> -->
+        <!-- <script src="js/Scratch.js"></script> -->
+        <script type="text/JavaScript" src="js/Scratch.js"></script> 
+
+    </body>
+
+</html>

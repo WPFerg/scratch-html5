@@ -121,10 +121,14 @@ function Scratch(project_id) {
 
     $('#container').bind('touchstart', function(e) {
         runtime.mouseDown = true;
+        // Stop IOS Scrolling
+        e.preventDefault();
     });
 
     $('#container').bind('touchend', function(e) {
         runtime.mouseDown = true;
+        // Stop IOS Scrolling
+        e.preventDefault();
     });
 
     $('#container').bind('touchmove', function(e) {

@@ -11,8 +11,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <!-- iPad properties: set width, disable pinch zoom -->
+
     <meta name=apple-mobile-web-app-capable content=yes>
-    <meta name="viewport" content="user-scalable=no,minimal-ui">
+    <meta name="viewport" content="user-scalable=no,minimal-ui,initial-scale=2">
     <meta name=apple-mobile-web-app-status-bar-style content=black>
 
     <link rel=stylesheet href=player.css>
@@ -26,7 +27,7 @@
   $(document).ready(function() {
     var project_id = projectId || location.hash && parseInt(location.hash.substr(1)) || 10000160;
     new Scratch(project_id);
-  };
+  });
 </script>
 
 <div id=player-container>
@@ -80,5 +81,6 @@
 <script src=js/primitives/Primitives.js></script>
 <script src=js/Interpreter.js></script>
 <script src=js/Runtime.js></script>
+<script src=js/AppCache.js></script>
 <!-- <script src=js/Scratch.js></script> -->
 <script type="text/JavaScript" src="js/Scratch.js"></script> 

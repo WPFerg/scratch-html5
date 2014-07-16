@@ -99,8 +99,8 @@ function Scratch(project_id) {
 
     $('#container').mousemove(function(e) {
         var bb = this.getBoundingClientRect();
-        var absX = e.clientX - bb.left;
-        var absY = e.clientY - bb.top;
+        var absX = (e.clientX - bb.left) / Scalar();
+        var absY = (e.clientY - bb.top) / Scalar();
         runtime.mousePos = [absX-240, -absY+180];
     });
 
@@ -129,8 +129,8 @@ function Scratch(project_id) {
     $('#container').bind('touchmove', function(e) {
         var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         var bb = this.getBoundingClientRect();
-        var absX = touch.clientX - bb.left;
-        var absY = touch.clientY - bb.top;
+        var absX = (touch.clientX - bb.left) / Scalar();
+        var absY = (touch.clientY - bb.top) / Scalar();
         runtime.mousePos = [absX-240, -absY+180];
     });
 

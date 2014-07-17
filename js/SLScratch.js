@@ -147,3 +147,8 @@ window.addEventListener("resize", AdjustForOrientation, false);
 // Stop iOS Scrolling
 $("#preloader").bind("touchstart", function(e) { e.preventDefault(); });
 $("#preloader").bind("touchend", function(e) { e.preventDefault(); });
+
+// Set project details from the API to set the title to the title of the project. If the project hasn't been published, fail silently.
+$.get("http://scratch.mit.edu/api/v1/project/" + projectId + "/?format=json", function(projectData) {
+    $("title").text(projectData.title);
+}).fail(function(){});

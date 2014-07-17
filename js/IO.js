@@ -44,6 +44,9 @@ IO.prototype.loadProject = function(project_id) {
         self.loadThreads();
         self.loadNotesDrums();
         runtime.loadStart(); // Try to run the project.
+    }).fail(function () {
+        // If the request fails, remove the player and notify the user.
+        $("body").html("<h1>This project can't be played.</h1>");
     });
 };
 

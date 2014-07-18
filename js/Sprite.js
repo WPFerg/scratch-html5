@@ -290,7 +290,9 @@ Sprite.prototype.updateVisible = function() {
     if (this.askInputOn) this.askInput.css('display', this.visible ? 'inline-block' : 'none');
 };
 
-Sprite.prototype.updateTransform = function() {
+Sprite.prototype.updateTransform = function()
+{
+
     var texture = this.textures[this.currentCostumeIndex];
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
 
@@ -534,8 +536,14 @@ Sprite.prototype.updateCachedPenColor = function() {
 };
 
 Sprite.prototype.stamp = function(canvas, opacity) {
-    var drawWidth = this.textures[this.currentCostumeIndex].width * this.scale;
-    var drawHeight = this.textures[this.currentCostumeIndex].height * this.scale;
+
+    var scale = this.scale;
+
+    var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
+
+    var drawWidth = this.textures[this.currentCostumeIndex].width;
+    var drawHeight = this.textures[this.currentCostumeIndex].height;
+
     var drawX = this.scratchX + (480 / 2);
     var drawY = -this.scratchY + (360 / 2);
 
@@ -544,19 +552,12 @@ Sprite.prototype.stamp = function(canvas, opacity) {
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
     var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
 
-    //$(canvas).css('-webkit-transform-origin', '0px 0px');
-    //$(this.mesh).css('-webkit-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
-
-    var drawX = this.scratchX + (480 / 2) - rotationCenterX;
-    var drawY = -this.scratchY + (360 / 2) - rotationCenterY;
-
-    //console.log(this.mesh);
-
     canvas.globalAlpha = opacity / 100.0;
     canvas.save();
     canvas.translate(drawX, drawY);
-    canvas.rotate(this.rotation * Math.PI / 180.0);
-    canvas.drawImage(this.mesh, 0, 0, drawWidth, drawHeight);
+    canvas.scale(scale / resolution, scale / resolution);
+    canvas.rotate(this.rotation * Math.PI / 180.0); //testing purposes
+    canvas.drawImage(this.mesh, -rotationCenterX, -rotationCenterY, drawWidth, drawHeight);
     canvas.restore();
     canvas.globalAlpha = 1;
 };

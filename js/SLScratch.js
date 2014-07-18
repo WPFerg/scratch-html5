@@ -67,6 +67,12 @@ function AdjustForOrientation()
 	// Set positions for new size
 	$('#player-container').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
 	$('#player-container').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
+    
+    // Debugging canvas
+    $('#hit-canvas').css('-webkit-transform-origin', '0 0');
+    $('#hit-canvas').css('-webkit-transform', 'scale(' + (Scalar()).toString() + ')');
+    $('#hit-canvas').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
+    $('#hit-canvas').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
 
     // Declare variables
     var GButton = $('#trigger-green-flag');

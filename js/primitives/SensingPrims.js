@@ -76,6 +76,7 @@ SensingPrims.prototype.primColorTouchingColor = function(b) {
 };
 
 var spriteHitTest = function(a, b) {
+
     var hitCanvas = document.createElement('canvas');
     hitCanvas.width = 480;
     hitCanvas.height = 360;
@@ -85,11 +86,18 @@ var spriteHitTest = function(a, b) {
     hitTester.globalCompositeOperation = 'source-in';
     b.stamp(hitTester, 100);
 
-    // var debug = document.getElementById("collisionMonitor");
-    // if (debug == null)
-    // {
-    //     $('body').append($(hitTester));
-    // }
+    // Debugging canvas
+    // var displayCanvas = document.createElement('canvas');
+    // displayCanvas.width = 480;
+    // displayCanvas.height = 360;
+    // var displayTester = displayCanvas.getContext('2d');
+    // //displayTester.globalCompositeOperation = 'source-over';
+    // a.stamp(displayTester, 100);
+    // //displayTester.globalCompositeOperation = 'source-in';
+    // b.stamp(displayTester, 100);
+
+    
+    // $('#hit-canvas').html(displayCanvas);
 
     var aData = hitTester.getImageData(0, 0, 480, 360).data;
 

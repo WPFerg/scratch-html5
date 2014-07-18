@@ -538,11 +538,25 @@ Sprite.prototype.stamp = function(canvas, opacity) {
     var drawHeight = this.textures[this.currentCostumeIndex].height * this.scale;
     var drawX = this.scratchX + (480 / 2);
     var drawY = -this.scratchY + (360 / 2);
+
+    // Addition of rotationCenterXY in calculation and removal of -dimension/2
+    // in the drawImage kind of solves the collision issues.
+    var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
+    var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
+
+    //$(canvas).css('-webkit-transform-origin', '0px 0px');
+    //$(this.mesh).css('-webkit-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
+
+    var drawX = this.scratchX + (480 / 2) - rotationCenterX;
+    var drawY = -this.scratchY + (360 / 2) - rotationCenterY;
+
+    //console.log(this.mesh);
+
     canvas.globalAlpha = opacity / 100.0;
     canvas.save();
     canvas.translate(drawX, drawY);
     canvas.rotate(this.rotation * Math.PI / 180.0);
-    canvas.drawImage(this.mesh, -drawWidth/2, -drawHeight/2, drawWidth, drawHeight);
+    canvas.drawImage(this.mesh, 0, 0, drawWidth, drawHeight);
     canvas.restore();
     canvas.globalAlpha = 1;
 };

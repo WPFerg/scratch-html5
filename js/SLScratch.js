@@ -133,6 +133,54 @@ function AdjustForOrientation()
 
 }
 
+// Return the value of a requested key
+function KeyValue(Key)
+{
+
+    // Find key and return value
+    for (var count = 0; count < window.Params.length; count ++)
+    {
+        if (window.Params[count].Key == Key)
+        {
+            return window.Params[count].Value;
+        }
+    }
+
+    // Return default value
+    return 'false';
+}
+
+
+// Get params
+var PassedParams = window.location.hash.substring(1, window.location.hash.length);
+var UnformattedParams = PassedParams.split('&');
+window.Params = [];
+
+// Format each parameter
+for (var count = 0; count < UnformattedParams.length; count ++)
+{
+    // Format the parameter
+    var NewParam = {};
+    NewParam.Key = UnformattedParams[count].split('=')[0];
+    NewParam.Value = UnformattedParams[count].split('=')[1];
+
+    // Push to window params
+    window.Params.push(NewParam);
+}
+
+// Hide element if required
+if (KeyValue('showflags') == 'false')
+{
+    $('#trigger-green-flag').css('display', 'none');
+    $('#trigger-stop').css('display', 'none');
+}
+
+// Automatically start the app
+if (KeyValue('autostart') == 'true')
+{
+	$('#overlay').css('display', 'none');
+	// if (!runtime.projectLoaded) { runtime.greenFlag(); }
+}
 
 // Call event onload
 AdjustForOrientation();
@@ -143,7 +191,3 @@ AdjustForOrientation();
 
 // Add event and link to event method
 window.addEventListener("resize", AdjustForOrientation, false);
-
-// Bind touch events to html
-$('body').bind('touchstart', function(Event) { Event.preventDefault(); });
-$('body').bind('touchmove', function(Event) { Event.preventDefault(); });

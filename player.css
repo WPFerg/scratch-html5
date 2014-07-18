@@ -82,12 +82,27 @@
 #overlay
 {
     position: absolute;
+    z-index: 10000;
+}
+
+.overlaycover
+{
     top: 0;
     left: 0;
         width: 480px;
-        height: 360px;
-    z-index: 10000;
-    background: url(img/playerStartFlag.png) rgba(0, 0, 0, .26) center center no-repeat;
+        height: 360px;    
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.overlayImage
+{
+    position: relative;
+    width: 74px;
+    height: 74px;
+    left: 50%;
+    top: 50%;
+    margin-left: -37px;
+    margin-top: -37px;
 }
 
 /* Preloader */

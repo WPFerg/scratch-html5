@@ -85,6 +85,12 @@ var spriteHitTest = function(a, b) {
     hitTester.globalCompositeOperation = 'source-in';
     b.stamp(hitTester, 100);
 
+    // var debug = document.getElementById("collisionMonitor");
+    // if (debug == null)
+    // {
+    //     $('body').append($(hitTester));
+    // }
+
     var aData = hitTester.getImageData(0, 0, 480, 360).data;
 
     var pxCount = aData.length;
@@ -113,9 +119,12 @@ var stageColorHitTest = function(target, color) {
     stageCanvas.height = 360;
     var stageContext = stageCanvas.getContext('2d');
 
+    // [SCOTT LOGIC] - type checking of not undefined and of sprite.
+
     $.each(runtime.sprites, function(i, sprite) {
-        if (sprite != target)
-            sprite.stamp(stageContext, 100);
+        if (sprite != target && sprite !== 'undefined')
+            if (typeof(sprite) == 'object' && sprite.constructor == Sprite)
+                sprite.stamp(stageContext, 100);
     });
 
     var hitData = stageContext.getImageData(0, 0, stageCanvas.width, stageCanvas.height).data;

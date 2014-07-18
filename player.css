@@ -108,13 +108,19 @@
 /* Preloader */
 #preloader {
     position: absolute;
-    z-index: 10001;
-    top: 50%;
-    left: 50%;
-    margin-left: -156px;
-    margin-top: -61px;
-    width: 309px;
-    height: 119px;
+    z-index: 10002;
+    top: 0%;
+    left: 0%;
+    
+    /*
+        -- SCOTT LOGIC [14:51 02_07_2014] --
+
+        Removed width and height declaration as a dynamic one now exists in the HTML.
+    */
+    width: 100%;
+    height: 100%;
+    
+
     border: 1px solid rgb(208, 209, 210);
     background: #fff;
     border-radius: 12px;
@@ -144,6 +150,15 @@
 #preloader-details {
     margin: 6px 0 0 4px;
     font-size: 12px;
+}
+#preloader-info-container
+{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin: auto;
+    height: 100px;
+    margin-top: -50px;
 }
 
 /* iPad arrow key frame */

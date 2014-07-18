@@ -89,12 +89,13 @@ function Scratch(project_id) {
     // Canvas container mouse events
     $('#container').mousedown(function(e) {
         runtime.mouseDown = true;
-        //e.preventDefault();
+        // Stop iOS scrolling
+        e.preventDefault();
     });
 
     $('#container').mouseup(function(e) {
         runtime.mouseDown = false;
-        //e.preventDefault();
+        e.preventDefault();
     });
 
     $('#container').mousemove(function(e) {
@@ -120,10 +121,14 @@ function Scratch(project_id) {
 
     $('#container').bind('touchstart', function(e) {
         runtime.mouseDown = true;
+        // Stop IOS Scrolling
+        e.preventDefault();
     });
 
     $('#container').bind('touchend', function(e) {
         runtime.mouseDown = true;
+        // Stop IOS Scrolling
+        e.preventDefault();
     });
 
     $('#container').bind('touchmove', function(e) {

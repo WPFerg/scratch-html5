@@ -191,6 +191,8 @@ AdjustForOrientation();
 
 // Add event and link to event method
 window.addEventListener("resize", AdjustForOrientation, false);
+<<<<<<< HEAD
+=======
 
 // Stop iOS Scrolling
 $("#preloader").bind("touchstart", function(e) { e.preventDefault(); });
@@ -200,3 +202,4 @@ $("#preloader").bind("touchend", function(e) { e.preventDefault(); });
 $.get("http://scratch.mit.edu/api/v1/project/" + projectId + "/?format=json", function(projectData) {
     $("title").text(projectData.title);
 }).fail(function(){});
+>>>>>>> f3b8adfa31acd0b33e2dce587a5ebc02ea5cbd07

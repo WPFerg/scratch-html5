@@ -288,6 +288,17 @@ var turnAwayFromEdge = function(s) {
     // Note: comparisions are in the stage coordinates, with origin (0, 0)
     // use bounding rect of the sprite to account for costume rotation and scale
     var r = s.getRect();
+
+    var resolution = s.costumes[s.currentCostumeIndex].bitmapResolution || 1;
+
+    var centerX = (r.left + r.right) / 2;
+    var centerY = (r.top + r.bottom) / 2;
+
+    r.left = centerX - (centerX - r.left) / resolution;
+    r.right = centerX + (r.right - centerX) / resolution;
+    r.top = centerY - (centerY - r.top) / resolution;
+    r.bottom = centerY + (r.bottom - centerY) / resolution;
+
     // measure distance to edges
     var d1 = Math.max(0, r.left);
     var d2 = Math.max(0, r.top);
@@ -315,6 +326,21 @@ var turnAwayFromEdge = function(s) {
 
 var ensureOnStageOnBounce = function(s) {
     var r = s.getRect();
+
+    console.log('Old Coords: (' + r.left + ',' + r.top + ') (' + r.right + ',' + r.bottom + ')');
+
+    var resolution = s.costumes[s.currentCostumeIndex].bitmapResolution || 1;
+
+    var centerX = (r.left + r.right) / 2;
+    var centerY = (r.top + r.bottom) / 2;
+
+    r.left = centerX - (centerX - r.left) / resolution;
+    r.right = centerX + (r.right - centerX) / resolution;
+    r.top = centerY - (centerY - r.top) / resolution;
+    r.bottom = centerY + (r.bottom - centerY) / resolution;
+
+    console.log('New Coords: (' + r.left + ',' + r.top + ') (' + r.right + ',' + r.bottom + ')');
+
     if (r.left < 0) moveSpriteTo(s, s.scratchX - r.left, s.scratchY);
     if (r.top < 0) moveSpriteTo(s, s.scratchX, s.scratchY + r.top);
     if (r.right > 480) {

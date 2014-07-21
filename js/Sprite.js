@@ -537,25 +537,25 @@ Sprite.prototype.updateCachedPenColor = function() {
 
 Sprite.prototype.stamp = function(canvas, opacity) {
 
-    var scale = this.scale;
-
-    var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
-
     var drawWidth = this.textures[this.currentCostumeIndex].width;
     var drawHeight = this.textures[this.currentCostumeIndex].height;
 
     var drawX = this.scratchX + (480 / 2);
     var drawY = -this.scratchY + (360 / 2);
 
-    // Addition of rotationCenterXY in calculation and removal of -dimension/2
-    // in the drawImage kind of solves the collision issues.
+    // [SCOTT LOGIC] - Need to calculate resolution for use later
+    var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
+
+    // [SCOTT LOGIC] - Calculate rotationCentres for later use
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
     var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
 
+    // [SCOTT LOGIC] - Perform translation before scaling object by scale over resolution.
+    //                 Remove -drawWidth/2 and -drawHeight/2 and replace with rotationCentres
     canvas.globalAlpha = opacity / 100.0;
     canvas.save();
     canvas.translate(drawX, drawY);
-    canvas.scale(scale / resolution, scale / resolution);
+    canvas.scale(this.scale / resolution, this.scale / resolution);
     canvas.rotate(this.rotation * Math.PI / 180.0); //testing purposes
     canvas.drawImage(this.mesh, -rotationCenterX, -rotationCenterY, drawWidth, drawHeight);
     canvas.restore();

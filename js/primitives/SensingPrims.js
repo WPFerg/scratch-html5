@@ -112,7 +112,8 @@ var spriteHitTest = function(a, b) {
 
 var stageColorHitTest = function(target, color) {
     var r, g, b;
-    r = (color >> 16);
+    // [SCOTT LOGIC] - added & 255 to first value, fixing negative number issues
+    r = (color >> 16 & 255);
     g = (color >> 8 & 255);
     b = (color & 255);
 
@@ -127,12 +128,15 @@ var stageColorHitTest = function(target, color) {
     stageCanvas.height = 360;
     var stageContext = stageCanvas.getContext('2d');
 
-    // [SCOTT LOGIC] - type checking of not undefined and of sprite.
-
+    // [SCOTT LOGIC] - type checking of not undefined and of sprite. Checking sprite is set to visible.
     $.each(runtime.sprites, function(i, sprite) {
-        if (sprite != target && sprite !== 'undefined')
-            if (typeof(sprite) == 'object' && sprite.constructor == Sprite)
+        if (sprite != target && sprite !== 'undefined' && typeof(sprite) == 'object' && sprite.constructor == Sprite)
+        {
+            if (sprite.visible == true)
+            {
                 sprite.stamp(stageContext, 100);
+            }
+        }
     });
 
     var hitData = stageContext.getImageData(0, 0, stageCanvas.width, stageCanvas.height).data;
@@ -140,8 +144,19 @@ var stageColorHitTest = function(target, color) {
     var pxCount = meshData.length;
     for (var i = 0; i < pxCount; i += 4) {
         if (meshData[i+3] > 0 && hitData[i] == r && hitData[i+1] == g && hitData[i+2] == b)
+        {
             return true;
+        }
+        if (meshData[i+3] > 0)
+        {
+            hitData[i] = 0;
+            hitData[i+1] = 0;
+            hitData[i+2] = 0;
+            stageContext.fillStyle = "rgba(0,0,0,1)";
+            stageContext.fillRect(i % 480, Math.floor(i/480), 1, 1);
+        }
     }
+
     return false;
 };
 

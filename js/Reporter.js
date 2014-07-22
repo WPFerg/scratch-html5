@@ -67,6 +67,10 @@ Reporter.prototype.attach = function(scene) {
             this.valueEl = this.el;
             break;
     }
+    if(!this.el)
+    {
+        return;
+    }
     this.el.css('left', this.x);
     this.el.css('top', this.y);
     this.el.css('z-index', this.z);
@@ -79,6 +83,10 @@ Reporter.prototype.attach = function(scene) {
 };
 
 Reporter.prototype.update = function() {
+    if(!this.el)
+    {
+        return;
+    }
     this.el.css('display', this.visible ? 'inline-block' : 'none');
     if (!this.visible) return;
 

@@ -88,7 +88,7 @@ Reporter.prototype.update = function() {
         return;
     }
     this.el.css('display', this.visible ? 'inline-block' : 'none');
-    if (!this.visible) return;
+    if (!this.visible || !target) return;
 
     var newValue = '';
     var target = runtime.spriteNamed(this.target);
@@ -218,4 +218,3 @@ List.prototype.update = function() {
 List.prototype.updateLayer = function() {
     this.el.css('z-index', this.z);
 };
-

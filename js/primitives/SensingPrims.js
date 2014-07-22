@@ -86,19 +86,6 @@ var spriteHitTest = function(a, b) {
     hitTester.globalCompositeOperation = 'source-in';
     b.stamp(hitTester, 100);
 
-    // Debugging canvas
-    // var displayCanvas = document.createElement('canvas');
-    // displayCanvas.width = 480;
-    // displayCanvas.height = 360;
-    // var displayTester = displayCanvas.getContext('2d');
-    // //displayTester.globalCompositeOperation = 'source-over';
-    // a.stamp(displayTester, 100);
-    // //displayTester.globalCompositeOperation = 'source-in';
-    // b.stamp(displayTester, 100);
-
-    
-    // $('#hit-canvas').html(displayCanvas);
-
     var aData = hitTester.getImageData(0, 0, 480, 360).data;
 
     var pxCount = aData.length;

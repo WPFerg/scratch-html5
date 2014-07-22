@@ -320,6 +320,7 @@ var turnAwayFromEdge = function(s) {
     if (e == 3) { dx = 0 - Math.max(0.2, Math.abs(dx)); }
     if (e == 4) { dy = 0 - Math.max(0.2, Math.abs(dy)); }
     var newDir = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+    s.direction = newDir;
     return true;
 };
 

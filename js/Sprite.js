@@ -485,7 +485,7 @@ Sprite.prototype.setSize = function(percent) {
 Sprite.prototype.keepOnStage = function() {
     var x = this.scratchX + 240;
     var y = 180 - this.scratchY;
-    var myBox = this.getRect();
+    var myBox = this.getRect(); // MAY GET CHANGED WITH MODIFIED GET RECT!
     var inset = -Math.min(18, Math.min(myBox.width, myBox.height) / 2);
     var edgeBox = new Rectangle(inset, inset, 480 - (2 * inset), 360 - (2 * inset));
     if (myBox.intersects(edgeBox)) return; // sprite is sufficiently on stage
@@ -497,11 +497,31 @@ Sprite.prototype.keepOnStage = function() {
     this.scratchY = 180 - y;
 };
 
+function toDrgrees(angle)
+{
+    return angle * (180 / Math.PI);
+}
+
+function toRadians(angle)
+{
+    return angle * (Math.PI / 180);
+}
+
 Sprite.prototype.getRect = function() {
+
+    // Save resultion for later use
+    var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
+
     var cImg = this.textures[this.currentCostumeIndex];
-    var x = this.scratchX + 240 - (cImg.width/2.0);
-    var y = 180 - this.scratchY - (cImg.height/2.0);
-    var myBox = new Rectangle(x, y, cImg.width, cImg.height);
+
+    // [SCOTT LOGIC] - Calculate rotationCentres for later use
+    var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
+    var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
+
+    var x = 240 + this.scratchX - (rotationCenterX) * this.scale / resolution;
+    var y = 180 - this.scratchY - (rotationCenterY) * this.scale / resolution;
+    var myBox = new Rectangle(x, y, cImg.width * this.scale / resolution, cImg.height * this.scale / resolution);
+
     return myBox;
 };
 

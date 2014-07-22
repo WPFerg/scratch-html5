@@ -312,7 +312,10 @@ Interpreter.prototype.initPrims = function() {
 Interpreter.prototype.timerBase = Date.now();
 Interpreter.prototype.lookupPrim = function(op) {
     var fcn = interp.primitiveTable[op];
-    if (fcn == null) fcn = function(b) { console.log('not implemented: ' + b.op); };
+    if (fcn == null) fcn = function(b)
+    {
+        console.log('not implemented: ' + b.op);
+    };
     return fcn;
 };
 

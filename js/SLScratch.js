@@ -68,6 +68,17 @@ function AdjustForOrientation()
 	$('#player-container').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
 	$('#player-container').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
     
+    // Debugging canvas code
+    // var displayCanvas = document.createElement('canvas');
+    // displayCanvas.width = 480;
+    // displayCanvas.height = 360;
+    // var displayTester = displayCanvas.getContext('2d');
+    // //displayTester.globalCompositeOperation = 'source-over';
+    // a.stamp(displayTester, 100);
+    // //displayTester.globalCompositeOperation = 'source-in';
+    // b.stamp(displayTester, 100);
+    // $('#hit-canvas').html(displayCanvas);
+
     // Debugging canvas
     // $('#hit-canvas').css('-webkit-transform-origin', '0 0');
     // $('#hit-canvas').css('-webkit-transform', 'scale(' + (Scalar()).toString() + ')');
@@ -155,7 +166,6 @@ function KeyValue(Key)
     // Return default value
     return 'false';
 }
-
 
 // Get params
 var PassedParams = window.location.hash.substring(1, window.location.hash.length);

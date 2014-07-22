@@ -181,7 +181,7 @@ var stageColorByColorHitTest = function(target, myColor, otherColor) {
     hitCanvas.height = 360;
     var hitCtx = hitCanvas.getContext('2d');
     $.each(runtime.sprites, function(i, sprite) {
-        if (sprite != target) {
+        if (sprite != target  && sprite !== 'undefined' && typeof(sprite) == 'object' && sprite.constructor == Sprite) {
             sprite.stamp(hitCtx, 100);
         }
     });

@@ -58,6 +58,7 @@ Runtime.prototype.loadStart = function() {
         setTimeout(function(runtime) { runtime.loadStart(); }, 50, this);
         return;
     }
+    
     for (var obj = 0; obj < runtime.sprites.length; obj++) {
         if (typeof(runtime.sprites[obj]) == 'object' && runtime.sprites[obj].constructor == Sprite) {
             if (!runtime.sprites[obj].isLoaded()) {
@@ -66,11 +67,13 @@ Runtime.prototype.loadStart = function() {
             }
         }
     }
+
     // this may need to be disabled for iPad loading to work
     if (Instr.wavsLoaded != Instr.wavCount) {
         setTimeout(function(runtime) { runtime.loadStart(); }, 50, this);
         return;
     }
+
     // $('#preloader').css('display', 'none');
     setInterval(this.step, 33);
     this.projectLoaded = true;

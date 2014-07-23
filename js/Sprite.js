@@ -39,7 +39,7 @@ var Sprite = function(data) {
     this.rotationStyle = data.rotationStyle || 'normal';
     this.isFlipped = data.direction < 0 && data.rotationStyle == 'leftRight';
     this.costumes = data.costumes || [];
-    this.currentCostumeIndex = data.currentCostumeIndex || 0;
+    this.currentCostumeIndex = parseInt(data.currentCostumeIndex) || 0;
     this.previousCostumeIndex = -1;
 
     this.objName = data.objName || '';
@@ -139,7 +139,7 @@ Sprite.prototype.attach = function(scene) {
                     }
                 });
             scene.append($(sprite.textures[c]));
-        }).attr({
+        }).error(function(error) { $("body").html("<h1>This project contains broken files, so it cannot be played</h1>"); }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });

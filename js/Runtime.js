@@ -58,7 +58,7 @@ Runtime.prototype.loadStart = function() {
         setTimeout(function(runtime) { runtime.loadStart(); }, 50, this);
         return;
     }
-    
+
     for (var obj = 0; obj < runtime.sprites.length; obj++) {
         if (typeof(runtime.sprites[obj]) == 'object' && runtime.sprites[obj].constructor == Sprite) {
             if (!runtime.sprites[obj].isLoaded()) {

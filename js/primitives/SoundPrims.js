@@ -40,7 +40,7 @@ var playSound = function(snd) {
     if(!snd) { return; }
     if (snd.source) {
         // If this particular sound is already playing, stop it.
-        snd.source.noteOff(0);
+        snd.source.disconnect();
         snd.source = null;
     }
 

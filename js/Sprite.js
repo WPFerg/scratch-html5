@@ -139,7 +139,7 @@ Sprite.prototype.attach = function(scene) {
                     }
                 });
             scene.append($(sprite.textures[c]));
-        }).attr({
+        }).error(function(error) { $("body").html("<h1>This project contains broken files, so it cannot be played</h1>"); }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });

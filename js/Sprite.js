@@ -509,6 +509,14 @@ function toRadians(angle)
 
 Sprite.prototype.getRect = function() {
 
+    function rotate_point(pointX, pointY, originX, originY, angle) {
+        angle = angle * Math.PI / 180.0;
+        return {
+            x: Math.cos(angle) * (pointX-originX) - Math.sin(angle) * (pointY-originY) + originX,
+            y: Math.sin(angle) * (pointX-originX) + Math.cos(angle) * (pointY-originY) + originY
+        };
+    }
+
     // Save resultion for later use
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
 
@@ -518,9 +526,56 @@ Sprite.prototype.getRect = function() {
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
     var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
 
-    var x = 240 + this.scratchX - (rotationCenterX) * this.scale / resolution;
-    var y = 180 - this.scratchY - (rotationCenterY) * this.scale / resolution;
-    var myBox = new Rectangle(x, y, cImg.width * this.scale / resolution, cImg.height * this.scale / resolution);
+    var x = 240 + this.scratchX - rotationCenterX * this.scale / resolution;
+    var y = 180 - this.scratchY - rotationCenterY * this.scale / resolution;
+
+     var myBox = new Rectangle(x, y, cImg.width * this.scale / resolution, cImg.height * this.scale / resolution);
+    //var myBox = new Rectangle(x, y, cImg.width, cImg.height);
+
+    // Check rotation style
+    if (this.rotationStyle == "normal")
+    {
+
+        // Set values of shape as defautl before rotation
+        var newLeft = x;
+        var newTop = y;
+        var newRight = x + cImg.width * this.scale / resolution;
+        var newBottom = y + cImg.height * this.scale / resolution;
+
+        // Calculate center for transformation
+        var relativeRotationX = x + rotationCenterX * this.scale / resolution;
+        var relativeRotationY = y + rotationCenterY * this.scale / resolution;
+
+        // Calculate new sets of co-ordinates after rotation
+        var newCoords = [];
+        newCoords.push(rotate_point(newLeft, newTop, relativeRotationX, relativeRotationY, this.rotation));
+        newCoords.push(rotate_point(newRight, newTop, relativeRotationX, relativeRotationY, this.rotation));
+        newCoords.push(rotate_point(newLeft, newBottom, relativeRotationX, relativeRotationY, this.rotation));
+        newCoords.push(rotate_point(newRight, newBottom, relativeRotationX, relativeRotationY, this.rotation));
+
+        var newLeft = -1;
+        var newTop = -1;
+        var newRight = -1;
+        var newBottom = -1;
+
+        // Rotate finding new bounds for shape
+        for (var count = 0; count < newCoords.length; count ++)
+        {
+            if (newLeft === -1) { newLeft = parseInt(newCoords[count].x); }
+            if (newTop === -1) { newTop = parseInt(newCoords[count].y); }
+            if (newRight === -1) { newRight = parseInt(newCoords[count].x); }
+            if (newBottom === -1) { newBottom = parseInt(newCoords[count].y); }
+
+            if (newLeft > newCoords[count].x) { newLeft = parseInt(newCoords[count].x); }
+            if (newTop > newCoords[count].y) { newTop = parseInt(newCoords[count].y); }
+            if (newRight < newCoords[count].x) { newRight = parseInt(newCoords[count].x); }
+            if (newBottom < newCoords[count].y) { newBottom = parseInt(newCoords[count].y); }
+        }
+
+        // Update box value
+        myBox = new Rectangle(newLeft, newTop, (newRight - newLeft), (newBottom - newTop));
+
+    }
 
     return myBox;
 };

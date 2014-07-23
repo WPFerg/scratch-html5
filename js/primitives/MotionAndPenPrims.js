@@ -316,6 +316,32 @@ var turnAwayFromEdge = function(s) {
 var ensureOnStageOnBounce = function(s) {
     var r = s.getRect();
 
+    var drawWidth = s.textures[s.currentCostumeIndex].width;
+    var drawHeight = s.textures[s.currentCostumeIndex].height;
+
+    var drawX = s.scratchX + (480 / 2);
+    var drawY = -s.scratchY + (360 / 2);
+
+    // [SCOTT LOGIC] - Need to calculate resolution for use later
+    var resolution = s.costumes[s.currentCostumeIndex].bitmapResolution || 1;
+
+    // [SCOTT LOGIC] - Calculate rotationCentres for later use
+    var rotationCenterX = s.costumes[s.currentCostumeIndex].rotationCenterX;
+    var rotationCenterY = s.costumes[s.currentCostumeIndex].rotationCenterY;
+
+    // Debugging canvas code
+    var displayCanvas = document.createElement('canvas');
+    displayCanvas.width = 480;
+    displayCanvas.height = 360;
+    var displayTester = displayCanvas.getContext('2d');
+    displayTester.fillRect(r.left, r.top, r.width, r.height);
+
+    if (s.costumes[s.currentCostumeIndex].baseLayerMD5 == '168c93c5d2750919185002d89b370762.png')
+    {
+        //$('#hit-canvas').html(displayCanvas);
+        displayCanvas = displayCanvas;
+    }
+
     if (r.left < 0) moveSpriteTo(s, s.scratchX - r.left, s.scratchY);
     if (r.top < 0) moveSpriteTo(s, s.scratchX, s.scratchY + r.top);
     if (r.right > 480) {

@@ -132,6 +132,7 @@ Reporter.prototype.update = function() {
 };
 
 Reporter.prototype.updateLayer = function() {
+  if (!this.el) return;
     this.el.css('z-index', this.z);
 };
 

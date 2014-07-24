@@ -117,11 +117,12 @@ var Sprite = function(data) {
 Sprite.prototype.attach = function(scene) {
     // Create textures and materials for each of the costumes.
     var containsErrors = false;
+    var sprite = this;
     for (var c in this.costumes) {
         this.textures[c] = document.createElement('img');
         $(this.textures[c])
         .load([this, c], function(evo) {
-            var sprite = evo.handleObj.data[0];
+            // var sprite = evo.handleObj.data[0];
             var c = evo.handleObj.data[1];
 
             sprite.costumesLoaded += 1;
@@ -140,7 +141,7 @@ Sprite.prototype.attach = function(scene) {
                     }
                 });
             scene.append($(sprite.textures[c]));
-        }).error(function(error) { if(!containsErrors) { containsErrors = true; alert("This project contains errors and corrupted files. Proceed at your own risk."); } }).attr({
+        }).error(function(error) { sprite.costumesLoaded += 1; if(!containsErrors) { containsErrors = true; alert("This project contains errors and corrupted files. Proceed at your own risk."); } }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });

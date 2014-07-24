@@ -1,6 +1,6 @@
 
 // Check to see if the project id exists
-if(projectId === "")
+if(typeof(projectId) == "undefined" || projectId === "")
 {
     alert("No project ID.");
 } else {

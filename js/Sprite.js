@@ -116,6 +116,7 @@ var Sprite = function(data) {
 // Attaches a Sprite (<img>) to a Scratch scene
 Sprite.prototype.attach = function(scene) {
     // Create textures and materials for each of the costumes.
+    var containsErrors = false;
     for (var c in this.costumes) {
         this.textures[c] = document.createElement('img');
         $(this.textures[c])
@@ -139,7 +140,7 @@ Sprite.prototype.attach = function(scene) {
                     }
                 });
             scene.append($(sprite.textures[c]));
-        }).error(function(error) { $("body").html("<h1>This project contains broken files, so it cannot be played</h1>"); }).attr({
+        }).error(function(error) { if(!containsErrors) { containsErrors = true; alert("This project contains errors and corrupted files. Proceed at your own risk."); } }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });

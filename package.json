@@ -1,5 +1,6 @@
 {
   "name": "scratch-html5",
+  "version": "0.0.5",
   "description": "HTML 5 based Scratch project player",
   "repository": "https://github.com/LLK/scratch-html5",
   "scripts": {

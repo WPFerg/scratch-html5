@@ -1,3 +1,5 @@
+/*global $:false, runtime:false,XMLHttpRequest:false,SoundDecoder:false,Instr:false,OffsetBuffer:false,Stage:false,Sprite:false,List:false,Reporter:false,interp:false,WAVFile:false*/
+
 // Copyright (C) 2013 Massachusetts Institute of Technology
 //
 // This program is free software; you can redistribute it and/or

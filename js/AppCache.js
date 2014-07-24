@@ -12,42 +12,42 @@ if(projectId === "")
     appCache.onprogress = function(e) {
         $("#preloader-caption").text("Downloading: " + e.loaded + "/" + e.total);
         $("#preloader-progress-bar").width(e.loaded * 100 / e.total + "%");
-    }
+    };
 
     appCache.ondownloading = function(e) {
         $("#preloader-caption").text("Downloading...");
-    }
+    };
 
     appCache.oncached = function(e) {
         $("#preloader-caption").text("Downloaded!");
         $("#preloader").fadeOut();
         showInfoMessage();
-    }
+    };
 
     appCache.onnoupdate = function(e) {
         $("#preloader").fadeOut();
         // Do nothing.
-    }
+    };
 
     appCache.onupdateready = function(e) {
         console.log("Updating AppCache");
         appCache.swapCache();
         appCache.oncached(e);
         $("#preloader").fadeOut();
-    }
+    };
 
     appCache.onchecking = function(e) {
         $("#preloader-caption").text("Checking for updates...");
-    }
+    };
 
     appCache.onerror = function(e) {
         showInfoMessage("Error checking or downloading updates.");
         $("#preloader").fadeOut();
-    }
+    };
 
     appCache.onobsolete = function(e) {
         // Nothing
-    }
+    };
 }
 
 showInfoMessage = function(text) {
@@ -58,5 +58,5 @@ showInfoMessage = function(text) {
     }
     $(".install-message").fadeIn();
 
-    setTimeout(function() { $(".install-message").fadeOut(); }, 10000)
-}
+    setTimeout(function() { $(".install-message").fadeOut(); }, 10000);
+};

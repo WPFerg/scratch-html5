@@ -121,11 +121,7 @@
     height: 100%;
 
 
-    border: 1px solid rgb(208, 209, 210);
     background: #fff;
-    border-radius: 12px;
-    -webkit-box-shadow: 4px 4px 6px rgba(0, 0, 0, .5);
-    box-shadow: 4px 4px 6px rgba(0, 0, 0, .5);
     cursor: default;
 }
 #preloader-progress {

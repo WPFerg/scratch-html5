@@ -78,7 +78,7 @@ function Scratch(project_id) {
     $('#trigger-green-flag, #overlay').click(function() {
         if (!runtime.projectLoaded) return;
         $('#overlay').css('display', 'none');
-        runtime.greenFlag()
+        runtime.greenFlag();
     });
 
     // Stop button behavior

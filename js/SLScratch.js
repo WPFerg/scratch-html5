@@ -151,7 +151,7 @@ function AdjustForOrientation()
 }
 
 // Return the value of a requested key
-function KeyValue(Key)
+var KeyValue = function(Key)
 {
 
     // Find key and return value
@@ -198,6 +198,14 @@ if (KeyValue('autostart') == 'true')
 	// if (!runtime.projectLoaded) { runtime.greenFlag(); }
 }
 
+if(KeyValue("fullscreen") !== "false")
+{
+    // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
+    $('#trigger-green-flag, #overlay').click(function() {
+        toggleFullScreen();
+    });
+}
+
 // Call event onload
 AdjustForOrientation();
 
@@ -216,3 +224,28 @@ $("#preloader").bind("touchend", function(e) { e.preventDefault(); });
 $.get("http://scratch.mit.edu/api/v1/project/" + projectId + "/?format=json", function(projectData) {
     $("title").text(projectData.title);
 }).fail(function(){});
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+}

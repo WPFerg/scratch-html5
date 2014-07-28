@@ -50,6 +50,11 @@ Primitives.prototype.addPrimsTo = function(primTable) {
     primTable['letter:of:']         = this.primLetterOf;
     primTable['stringLength:']      = function(b) { return interp.arg(b, 0).length; };
 
+    // Procedure primitives
+    primTable['call']               = this.callProcedure;
+    primTable['procDef']            = this.procDef;
+    primTable['getParam']           = this.getParam;
+
     new VarListPrims().addPrimsTo(primTable);
     new MotionAndPenPrims().addPrimsTo(primTable);
     new LooksPrims().addPrimsTo(primTable);
@@ -104,3 +109,118 @@ Primitives.prototype.primMathFunction = function(b) {
     return 0;
 }
 
+Primitives.prototype.callProcedure = function(b) {
+
+    // Method to parse parameters
+    function parseParams(Block) {
+        var result = [];
+        if (Block.args.length > 1)
+        {
+            for (var count = 1; count < Block.args.length; count ++)
+            {
+                result.push(Block.args[count]);
+            }
+        }
+        return result;
+    }
+
+    // Method to apply params to a given block
+    function applyParams(Block, Params) {
+
+        // Make sure some params exist
+        if (Params.length > 0)
+        {
+            Block.args[2].op = Params[0];
+            for (var count = 0; count < Block.args[2].args.length; count ++)
+            {
+                Block.args[2].args[count] = Params[count + 1];
+            }
+
+        }
+
+        // Return changed block
+        return Block;
+
+    }
+
+    // Gather thread information
+    var targetSprite = interp.activeThread.target;
+    var currentThreadState = interp.activeThread;
+
+    // Get list of paremters passed
+    var passedParams = parseParams(b);
+
+    // Find activeThread in threads and halt it
+    var newThreads = [];
+    for (var count = 0; count < interp.threads.length; count ++)
+    {
+        if (interp.threads[count] != interp.activeThread)
+        {
+            newThreads.push(interp.threads[count]);
+        }
+    }
+    interp.threads = newThreads;
+
+    // Locate stack to call in sprite
+    var stackToCall = null;
+    for (var count = 0; count < targetSprite.stacks.length; count ++)
+    {
+        if ( (targetSprite.stacks[count].op == "procDef") && (interp.arg(b, 0) == interp.arg(targetSprite.stacks[count], 0)) )
+        {
+
+            targetSprite.stacks[count] = applyParams(targetSprite.stacks[count], passedParams);
+            interp.startThread(targetSprite.stacks[count], targetSprite);
+
+        }
+    }
+
+    // Add existing thread to stack
+    interp.activeThread.stack = currentThreadState.stack;
+    interp.activeThread.stack.push(currentThreadState.nextBlock);
+
+}
+
+Primitives.prototype.procDef = function(b) {
+
+    // Do nothing
+
+}
+
+Primitives.prototype.getParam = function(b) {
+
+    // Method to return the index of requested parameter
+    function FindIndex(Block, ParamName)
+    {
+        if (Block.args.length == 4)
+        {
+            if (Block.args[1].args.length > 0 && Block.args[1].op != 'undefined')
+            {
+                if (Block.args[1].op == ParamName)
+                {
+                    return 0;
+                } else {
+                    for (var count = 0; count < Block.args[1].args.length; count ++)
+                    {
+                        if (Block.args[1].args[count] == ParamName)
+                        {
+                            return (count + 1);
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    // Calculate a few things first
+    var indexMatch = FindIndex(interp.activeThread.firstBlock, interp.arg(b, 0));
+
+    // Return appropriate value
+    if (indexMatch = 0)
+    {
+        return interp.activeThread.firstBlock.args[2].op;
+    } else {
+        return interp.activeThread.firstBlock.args[2].args[indexMatch-1];
+    }
+
+}

@@ -509,6 +509,7 @@ function toRadians(angle)
 
 Sprite.prototype.getRect = function() {
 
+    // Rotate points around origin using passed angle
     function rotate_point(pointX, pointY, originX, originY, angle) {
         angle = angle * Math.PI / 180.0;
         return {

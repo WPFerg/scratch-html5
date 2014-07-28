@@ -164,11 +164,14 @@ Interpreter.prototype.stepActiveThread = function() {
                 return;
             } else {
                 b = this.activeThread.stack.pop();
-                if (b.isLoop) {
-                    this.activeThread.nextBlock = b; // preserve where it left off
-                    return;
-                } else {
-                    b = b.nextBlock; // skip and continue for non looping blocks
+                if (b != 'undefined' && b != null)
+                {
+                    if (b.isLoop) {
+                        this.activeThread.nextBlock = b; // preserve where it left off
+                        return;
+                    } else {
+                        b = b.nextBlock; // skip and continue for non looping blocks
+                    }
                 }
             }
         }

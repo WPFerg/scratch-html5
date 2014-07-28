@@ -195,7 +195,17 @@ if (KeyValue('showflags') == 'false')
 if (KeyValue('autostart') == 'true')
 {
 	$('#overlay').css('display', 'none');
-	// if (!runtime.projectLoaded) { runtime.greenFlag(); }
+
+    var recheckFunction = function()
+    {
+        if(typeof(runtime) !== "undefined" && runtime.projectLoaded)
+        {
+            runtime.greenFlag();
+        } else {
+            setTimeout(recheckFunction, 100);
+        }
+    }
+	recheckFunction();
 }
 
 if(KeyValue("fullscreen") !== "false")

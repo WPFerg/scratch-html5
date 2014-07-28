@@ -110,7 +110,6 @@ Primitives.prototype.primMathFunction = function(b) {
     }
     return 0;
 }
-<<<<<<< HEAD
 
 Primitives.prototype.callProcedure = function(b) {
 
@@ -239,5 +238,3 @@ Primitives.prototype.getParam = function(b) {
     }
 
 }
-=======
->>>>>>> 5016ef7106132e8d04d6b46d84f5aebf3c9e6f39

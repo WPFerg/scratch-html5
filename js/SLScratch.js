@@ -211,9 +211,11 @@ if (KeyValue('autostart') == 'true')
 if(KeyValue("fullscreen") !== "false")
 {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
-    $('#trigger-green-flag, #overlay').click(function() {
+    var initialGreenFlagFunction = function() {
         toggleFullScreen();
-    });
+        $('#trigger-green-flag, #overlay').unbind("click",initialGreenFlagFunction);
+    }
+    $('#trigger-green-flag, #overlay').click(initialGreenFlagFunction);
 }
 
 // Call event onload

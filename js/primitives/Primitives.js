@@ -188,6 +188,18 @@ Primitives.prototype.procDef = function(b) {
 
 Primitives.prototype.getParam = function(b) {
 
+    // Method to evaluate parameters
+    function EvalParam(Param)
+    {
+        if (typeof(Param.op) == 'object')
+        {
+            return Param.primFcn;
+        } else {
+            return Param;
+        }
+
+    }
+
     // Method to return the index of requested parameter
     function FindIndex(Block, ParamName)
     {
@@ -216,11 +228,11 @@ Primitives.prototype.getParam = function(b) {
     var indexMatch = FindIndex(interp.activeThread.firstBlock, interp.arg(b, 0));
 
     // Return appropriate value
-    if (indexMatch = 0)
+    if (indexMatch == 0)
     {
-        return interp.activeThread.firstBlock.args[2].op;
+        return EvalParam(interp.activeThread.firstBlock.args[2].op);
     } else {
-        return interp.activeThread.firstBlock.args[2].args[indexMatch-1];
+        return EvalParam(interp.activeThread.firstBlock.args[2].args[indexMatch-1]);
     }
 
 }

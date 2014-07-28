@@ -39,7 +39,7 @@ var Sprite = function(data) {
     this.rotationStyle = data.rotationStyle || 'normal';
     this.isFlipped = data.direction < 0 && data.rotationStyle == 'leftRight';
     this.costumes = data.costumes || [];
-    this.currentCostumeIndex = parseInt(data.currentCostumeIndex) || 0;
+    this.currentCostumeIndex = Math.floor(data.currentCostumeIndex) || 0;
     this.previousCostumeIndex = -1;
 
     this.objName = data.objName || '';
@@ -116,11 +116,13 @@ var Sprite = function(data) {
 // Attaches a Sprite (<img>) to a Scratch scene
 Sprite.prototype.attach = function(scene) {
     // Create textures and materials for each of the costumes.
+    var containsErrors = false;
+    var sprite = this;
     for (var c in this.costumes) {
         this.textures[c] = document.createElement('img');
         $(this.textures[c])
         .load([this, c], function(evo) {
-            var sprite = evo.handleObj.data[0];
+            // var sprite = evo.handleObj.data[0];
             var c = evo.handleObj.data[1];
 
             sprite.costumesLoaded += 1;
@@ -139,7 +141,7 @@ Sprite.prototype.attach = function(scene) {
                     }
                 });
             scene.append($(sprite.textures[c]));
-        }).error(function(error) { $("body").html("<h1>This project contains broken files, so it cannot be played</h1>"); }).attr({
+        }).error(function(error) { sprite.costumesLoaded += 1; if(!containsErrors) { containsErrors = true; alert("This project contains errors and corrupted files. Proceed at your own risk."); } }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });

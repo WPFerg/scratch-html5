@@ -40,7 +40,7 @@ var Reporter = function(data) {
 Reporter.prototype.determineReporterLabel = function() {
     if (this.target === 'Stage' && this.cmd === "getVar:") return this.param;
     if (this.target === 'Stage' && this.param === null) return this.cmd;
-    return this.target + ': ' + this.param;
+    return this.target + ': ' + (this.param || this.cmd);
 }
 
 Reporter.prototype.attach = function(scene) {
@@ -88,7 +88,7 @@ Reporter.prototype.update = function() {
         return;
     }
     this.el.css('display', this.visible ? 'inline-block' : 'none');
-    if (!this.visible || !target) return;
+    if (!this.visible || !this.target) return;
 
     var newValue = '';
     var target = runtime.spriteNamed(this.target);

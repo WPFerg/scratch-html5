@@ -15,6 +15,8 @@ module.exports = function(config){
     ],
 
     exclude : [
+      'js/AppCache.js',
+      'js/SLScratch.js'
     ],
 
     preprocessors: {

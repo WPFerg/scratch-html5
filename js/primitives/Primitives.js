@@ -105,9 +105,12 @@ Primitives.prototype.primMathFunction = function(b) {
         case 'log': return Math.log(n) / Math.LN10;
         case 'e ^': return Math.exp(n);
         case '10 ^': return Math.exp(n * Math.LN10);
+        case 'floor': return Math.floor(n);
+        case 'ceiling': return Math.ceil(n);
     }
     return 0;
 }
+<<<<<<< HEAD
 
 Primitives.prototype.callProcedure = function(b) {
 
@@ -236,3 +239,5 @@ Primitives.prototype.getParam = function(b) {
     }
 
 }
+=======
+>>>>>>> 5016ef7106132e8d04d6b46d84f5aebf3c9e6f39

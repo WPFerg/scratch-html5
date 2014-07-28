@@ -118,7 +118,7 @@ Interpreter.prototype.stepThreads = function() {
         if (threadStopped) {
             var newThreads = [];
             for (var a = this.threads.length-1; a >= 0; --a) {
-                if (this.threads[a].nextBlock != null) {
+                if (this.threads[a].nextBlock != null || this.threads[a].stack.length > 0) {
                     newThreads.push(this.threads[a]);
                 }
             }
@@ -135,7 +135,28 @@ Interpreter.prototype.stepActiveThread = function() {
         return;
     }
     var b = this.activeThread.nextBlock;
-    if (b == null) return;
+    if (b == null)
+    {
+        while (!b)
+        {
+            if (this.activeThread.stack.length === 0) {
+                this.activeThread.nextBlock = null;
+                return;
+            } else {
+                b = this.activeThread.stack.pop();
+                if (b != 'undefined' && b != null)
+                {
+                    if (b.isLoop) {
+                        this.activeThread.nextBlock = b; // preserve where it left off
+                        return;
+                    } else {
+                        b = b.nextBlock; // skip and continue for non looping blocks
+                    }
+                }
+            }
+            //return;
+        }
+    }
     this.yield = false;
     while (true) {
         if (this.activeThread.paused) return;
@@ -153,6 +174,35 @@ Interpreter.prototype.stepActiveThread = function() {
             this.debugFunc(this.opCount2, b.op, finalArgs);
             ++this.opCount2;
         }
+
+        // if (b.op !== 'doWaitUntil')
+        // {
+        //     var displayArgs = '';
+        //     for (var count = 0; count < b.args.length; count ++)
+        //     {
+        //         displayArgs = displayArgs + b.args[count] + ' ';
+        //     }
+        //     var stackTrace = '';
+        //     for (var count = 0; count < this.activeThread.stack.length; count ++)
+        //     {
+        //         if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
+        //         {
+        //             stackTrace = stackTrace + this.activeThread.stack[count].firstBlock.op + ' => ';
+        //         } else {
+        //             stackTrace = stackTrace;
+        //         }
+        //     }
+        //     console.log('Executing: ' + stackTrace + b.op + ' > ' + displayArgs);
+        // }
+
+        // if (b.op == 'call' && b.args.length > 0)
+        // {
+        //     if (b.args[0] == 'createBlock %n %n %n')
+        //     {
+        //         b.op = b.op;
+        //     }
+        // }
+
         b.primFcn(b);
         if (this.yield) { this.activeThread.nextBlock = b; return; }
         b = this.activeThread.nextBlock; // refresh local variable b in case primitive did some control flow

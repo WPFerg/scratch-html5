@@ -111,6 +111,9 @@ var Sprite = function(data) {
 
     // Stacks to be pushed to the interpreter and run
     this.stacks = [];
+
+    // Clone properties
+    this.isClone = false;
 };
 
 // Attaches a Sprite (<img>) to a Scratch scene

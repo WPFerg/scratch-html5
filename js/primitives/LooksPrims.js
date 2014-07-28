@@ -43,6 +43,9 @@ LooksPrims.prototype.addPrimsTo = function(primTable) {
     primTable['setGraphicEffect:to:']    = this.primSetEffect;
     primTable['filterReset']             = this.primClearEffects;
 
+    primTable['createCloneOf']      = this.createCloneOf;
+    primTable['whenCloned']         = interp.primNoop;
+
     primTable['say:'] = function(b) { showBubble(b, 'say'); };
     primTable['say:duration:elapsed:from:'] = function(b) { showBubbleAndWait(b, 'say'); };
     primTable['think:'] = function(b) { showBubble(b, 'think'); };
@@ -188,3 +191,35 @@ var showBubbleAndWait = function(b, type) {
         if (interp.checkTimer()) s.hideBubble();
     }
 };
+
+LooksPrims.prototype.createCloneOf = function(b) {
+
+    // Create object clone
+    var cloneSprite = null;
+    for (var count = 0; count < runtime.sprites.length; count ++)
+    {
+        if (runtime.sprites[count].objName == interp.arg(b, 0))
+        {
+            cloneSprite = $.extend(true, {}, runtime.sprites[count]);
+            break;
+        }
+    }
+
+    // Break if no source was found
+    if (cloneSprite == null) { return; }
+
+    // Append sprite to scene
+    //cloneSprite.objName = "TEST_NAME";
+    cloneSprite.attach(runtime.scene);
+
+    // Active clone event
+    for (var count = 0; count < cloneSprite.stacks.length; count ++)
+    {
+        if (cloneSprite.stacks[count].op == 'whenCloned')
+        {
+            interp.startThread(cloneSprite.stacks[count], cloneSprite);
+            break;
+        }
+    }
+
+}

@@ -239,4 +239,8 @@ Primitives.prototype.getParam = function(b) {
         return b;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> IMPLEMENTED! Clone sprite and on clone event.

@@ -242,13 +242,18 @@ Interpreter.prototype.stepActiveThread = function() {
                 this.activeThread.nextBlock = null;
                 return;
             } else {
-                b = this.activeThread.stack.pop();
+                var poppedThread = this.activeThread.stack.pop();
+                b = poppedThread;
                 if (b != 'undefined' && b != null)
                 {
                     if (b.isLoop) {
                         this.activeThread.nextBlock = b; // preserve where it left off
                         return;
                     } else {
+                        if (poppedThread.firstBlock.op == 'procDef')
+                        {
+                            this.activeThread = poppedThread;
+                        }
                         b = b.nextBlock; // skip and continue for non looping blocks
                     }
                 }

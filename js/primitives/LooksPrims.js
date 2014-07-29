@@ -45,6 +45,7 @@ LooksPrims.prototype.addPrimsTo = function(primTable) {
 
     primTable['createCloneOf']      = this.createCloneOf;
     primTable['whenCloned']         = interp.primNoop;
+    primTable['deleteClone']        = this.deleteClone;
 
     primTable['say:'] = function(b) { showBubble(b, 'say'); };
     primTable['say:duration:elapsed:from:'] = function(b) { showBubbleAndWait(b, 'say'); };
@@ -219,6 +220,31 @@ LooksPrims.prototype.createCloneOf = function(b) {
         {
             interp.startThread(cloneSprite.stacks[count], cloneSprite);
             break;
+        }
+    }
+
+}
+
+LooksPrims.prototype.deleteClone = function(b) {
+
+    // Remove reference to clone and end thread
+    for (var count = 0; count < runtime.sprites.length; count ++)
+    {
+        if (runtime.sprites[count] == interp.activeThread.target)
+        {
+
+            // Remove all DOM elements
+            for (var count = 0; count < interp.activeThread.target.textures.length; count ++)
+            {
+                interp.activeThread.target.textures[count].remove();
+            }
+
+            // Remove references to sprite
+            runtime.sprites[count] = null;
+            runtime.sprites = runtime.sprites.filter(function (el) { return el !== null; });
+            interp.toggleThread(b, null);
+            break;
+
         }
     }
 

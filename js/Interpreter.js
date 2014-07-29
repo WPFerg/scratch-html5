@@ -183,7 +183,7 @@ Interpreter.prototype.stepActiveThread = function() {
         //         displayArgs = displayArgs + b.args[count] + ' ';
         //     }
         //     var stackTrace = '';
-        //     for (var count = 0; count < this.activeThread.stack.length; count ++)
+        //     for (var count = 0; count < this.activeThread.stack.length; count ++)q
         //     {
         //         if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
         //         {
@@ -195,13 +195,13 @@ Interpreter.prototype.stepActiveThread = function() {
         //     console.log('Executing: ' + stackTrace + b.op + ' > ' + displayArgs);
         // }
 
-        // if (b.op == 'call' && b.args.length > 0)
-        // {
-        //     if (b.args[0] == 'createBlock %n %n %n')
-        //     {
-        //         b.op = b.op;
-        //     }
-        // }
+        if (b.op == 'broadcast' || b.op == 'broadcast:')
+        {
+            if (b.args[0] == 'createBlock %n %n %n')
+            {
+                b.op = b.op;
+            }
+        }
 
         b.primFcn(b);
         if (this.yield) { this.activeThread.nextBlock = b; return; }
@@ -240,8 +240,11 @@ Interpreter.prototype.toggleThread = function(b, targetObj) {
         }
     }
     this.threads = newThreads;
-    if (!wasRunning) {
+    if (!wasRunning && targetObj !== null) {
         this.startThread(b, targetObj);
+    } else {
+        // Shift active thread to new thread
+        this.activeThread = this.threads[0];
     }
 }
 

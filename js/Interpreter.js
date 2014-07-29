@@ -398,10 +398,14 @@ Interpreter.prototype.stopScripts = function(b) {
     switch(target)
     {
         case "this script":
-            var threadIndex = interp.threads.indexOf(interp.activeThread);
-            if(threadIndex !== -1)
+            var newThreads = interp.threads.filter(function(element)
             {
-                interp.threads.splice(threadIndex,1);
+                return element !== interp.activeThread;
+            });
+
+            if(newThreads !== interp.threads)
+            {
+                interp.threads = newThreads;
                 interp.activeThread = new Thread(null);
             }
             break;

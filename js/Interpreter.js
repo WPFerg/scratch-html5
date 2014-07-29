@@ -175,25 +175,31 @@ Interpreter.prototype.stepActiveThread = function() {
             ++this.opCount2;
         }
 
-        // if (b.op !== 'doWaitUntil')
-        // {
-        //     var displayArgs = '';
-        //     for (var count = 0; count < b.args.length; count ++)
-        //     {
-        //         displayArgs = displayArgs + b.args[count] + ' ';
-        //     }
-        //     var stackTrace = '';
-        //     for (var count = 0; count < this.activeThread.stack.length; count ++)q
-        //     {
-        //         if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
-        //         {
-        //             stackTrace = stackTrace + this.activeThread.stack[count].firstBlock.op + ' => ';
-        //         } else {
-        //             stackTrace = stackTrace;
-        //         }
-        //     }
-        //     console.log('Executing: ' + stackTrace + b.op + ' > ' + displayArgs);
-        // }
+        if (b.op !== 'doWaitUntil')
+        {
+            var displayArgs = '';
+            for (var count = 0; count < b.args.length; count ++)
+            {
+                displayArgs = displayArgs + b.args[count] + ' ';
+            }
+            var stackTrace = '';
+            for (var count = 0; count < this.activeThread.stack.length; count ++)
+            {
+                if (typeof(this.activeThread.stack[count]) !== 'undefined')
+                {
+                    if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
+                    {
+                        stackTrace = stackTrace + this.activeThread.stack[count].firstBlock.op + ' => ';
+                    }
+                }
+            }
+            if (typeof(this.activeThread) !== 'undefined')
+            {
+                console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' > ' + displayArgs);
+            } else {
+                console.log('Executing: ' + stackTrace + b.op + ' > ' + displayArgs);
+            }
+        }
 
         if (b.op == 'broadcast' || b.op == 'broadcast:')
         {

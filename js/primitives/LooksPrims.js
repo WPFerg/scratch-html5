@@ -201,7 +201,10 @@ LooksPrims.prototype.createCloneOf = function(b) {
     {
         if (runtime.sprites[count].objName == interp.arg(b, 0))
         {
-            cloneSprite = $.extend(true, {}, runtime.sprites[count]);
+            cloneSprite = new Sprite(runtime.sprites[count].data);
+            cloneSprite = $.extend(cloneSprite, runtime.sprites[count]);
+            cloneSprite.cloneID = runtime.cloneID;
+            runtime.cloneID = runtime.cloneID + 1;
             break;
         }
     }
@@ -212,6 +215,7 @@ LooksPrims.prototype.createCloneOf = function(b) {
     // Append sprite to scene
     //cloneSprite.objName = "TEST_NAME";
     cloneSprite.attach(runtime.scene);
+    runtime.sprites.push(cloneSprite);
 
     // Active clone event
     for (var count = 0; count < cloneSprite.stacks.length; count ++)
@@ -230,21 +234,23 @@ LooksPrims.prototype.deleteClone = function(b) {
     // Remove reference to clone and end thread
     for (var count = 0; count < runtime.sprites.length; count ++)
     {
-        if (runtime.sprites[count] == interp.activeThread.target)
+        if (runtime.sprites[count] == interp.activeThread.target &&
+            typeof(runtime.sprites[count].cloneID) !== 'undefined' &&
+            typeof(interp.activeThread.target.cloneID) !== 'undefined')
         {
-
-            // Remove all DOM elements
-            for (var count = 0; count < interp.activeThread.target.textures.length; count ++)
+            if (runtime.sprites[count].cloneID == interp.activeThread.target.cloneID)
             {
-                interp.activeThread.target.textures[count].remove();
+
+                // Remove all DOM elements
+                runtime.sprites[count].mesh.remove();
+
+                // Remove references to sprite
+                runtime.sprites[count] = null;
+                runtime.sprites = runtime.sprites.filter(function (el) { return el !== null; });
+                interp.toggleThread(b, null);
+                break;
+
             }
-
-            // Remove references to sprite
-            runtime.sprites[count] = null;
-            runtime.sprites = runtime.sprites.filter(function (el) { return el !== null; });
-            interp.toggleThread(b, null);
-            break;
-
         }
     }
 

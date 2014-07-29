@@ -35,6 +35,7 @@ var Runtime = function() {
     this.audioPlaying = [];
     this.notesPlaying = [];
     this.projectLoaded = false;
+    this.cloneID = 0;
 };
 
 // Initializer for the drawing and audio contexts.

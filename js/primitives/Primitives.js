@@ -197,7 +197,7 @@ Primitives.prototype.getParam = function(b) {
         {
             if (Block.args.length == 4)
             {
-                if (Block.args[1].args.length > 0 && Block.args[1].op != 'undefined')
+                if (Block.args[1].args.length > 0 || typeof(Block.args[1].op) != 'undefined')
                 {
                     if (Block.args[1].op == ParamName)
                     {

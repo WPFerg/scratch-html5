@@ -175,12 +175,13 @@ Interpreter.prototype.stepActiveThread = function() {
             ++this.opCount2;
         }
 
-        if (b.op !== 'doWaitUntil')
+        if (b.op !== 'doWaitUntil ')
         {
             var displayArgs = '';
             for (var count = 0; count < b.args.length; count ++)
             {
-                displayArgs = displayArgs + b.args[count] + ' ';
+                displayArgs = displayArgs + b.args[count];
+                if (count < b.args.length-1) displayArgs = displayArgs + ', ';
             }
             var stackTrace = '';
             for (var count = 0; count < this.activeThread.stack.length; count ++)
@@ -189,15 +190,35 @@ Interpreter.prototype.stepActiveThread = function() {
                 {
                     if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
                     {
-                        stackTrace = stackTrace + this.activeThread.stack[count].firstBlock.op + ' => ';
+                        var name = this.activeThread.stack[count].firstBlock.op;
+                        if (name == 'procDef')
+                        {
+                            name = this.activeThread.stack[count].firstBlock.args[0].split(' ')[0];
+                        }
+                        stackTrace = stackTrace + name + ' => ';
                     }
+                }
+            }
+            if (typeof(this.activeThread.firstBlock) !== 'undefined')
+            {
+                var name = this.activeThread.firstBlock.op;
+                if (name == 'procDef')
+                {
+                    name = this.activeThread.firstBlock.args[0].split(' ')[0];
+                }
+
+                if (stackTrace == '')
+                {
+                    stackTrace = name + ' => ';
+                } else {
+                    stackTrace = stackTrace + name + ' => ';
                 }
             }
             if (typeof(this.activeThread) !== 'undefined')
             {
-                console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' > ' + displayArgs);
+                console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' [' + displayArgs + ']');
             } else {
-                console.log('Executing: ' + stackTrace + b.op + ' > ' + displayArgs);
+                console.log('Executing: ' + stackTrace + b.op + ' [' + displayArgs + ']');
             }
         }
 

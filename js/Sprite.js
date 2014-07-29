@@ -271,8 +271,7 @@ Sprite.prototype.onClick = function(evt) {
     } else {
         // Otherwise, move back a layer and trigger the click event
         $(this.mesh).hide();
-        var bb = $('#container')[0].getBoundingClientRect();
-        var underElement = document.elementFromPoint(bb.left + mouseX, bb.top + mouseY);
+        var underElement = document.elementFromPoint(evt.clientX, evt.clientY);
         $(underElement).click();
         $(this.mesh).show();
     }

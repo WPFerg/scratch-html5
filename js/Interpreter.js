@@ -175,60 +175,60 @@ Interpreter.prototype.stepActiveThread = function() {
             ++this.opCount2;
         }
 
-        if (b.op !== 'doWaitUntil ')
-        {
-            var displayArgs = '';
-            for (var count = 0; count < b.args.length; count ++)
-            {
-                displayArgs = displayArgs + b.args[count];
-                if (count < b.args.length-1) displayArgs = displayArgs + ', ';
-            }
-            var stackTrace = '';
-            for (var count = 0; count < this.activeThread.stack.length; count ++)
-            {
-                if (typeof(this.activeThread.stack[count]) !== 'undefined')
-                {
-                    if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
-                    {
-                        var name = this.activeThread.stack[count].firstBlock.op;
-                        if (name == 'procDef')
-                        {
-                            name = this.activeThread.stack[count].firstBlock.args[0].split(' ')[0];
-                        }
-                        stackTrace = stackTrace + name + ' => ';
-                    }
-                }
-            }
-            if (typeof(this.activeThread.firstBlock) !== 'undefined')
-            {
-                var name = this.activeThread.firstBlock.op;
-                if (name == 'procDef')
-                {
-                    name = this.activeThread.firstBlock.args[0].split(' ')[0];
-                }
+        // if (b.op !== 'doWaitUntil ')
+        // {
+        //     var displayArgs = '';
+        //     for (var count = 0; count < b.args.length; count ++)
+        //     {
+        //         displayArgs = displayArgs + b.args[count];
+        //         if (count < b.args.length-1) displayArgs = displayArgs + ', ';
+        //     }
+        //     var stackTrace = '';
+        //     for (var count = 0; count < this.activeThread.stack.length; count ++)
+        //     {
+        //         if (typeof(this.activeThread.stack[count]) !== 'undefined')
+        //         {
+        //             if (typeof(this.activeThread.stack[count].firstBlock) !== 'undefined' && this.activeThread.stack[count].firstBlock !== null)
+        //             {
+        //                 var name = this.activeThread.stack[count].firstBlock.op;
+        //                 if (name == 'procDef')
+        //                 {
+        //                     name = this.activeThread.stack[count].firstBlock.args[0].split(' ')[0];
+        //                 }
+        //                 stackTrace = stackTrace + name + ' => ';
+        //             }
+        //         }
+        //     }
+        //     if (typeof(this.activeThread.firstBlock) !== 'undefined')
+        //     {
+        //         var name = this.activeThread.firstBlock.op;
+        //         if (name == 'procDef')
+        //         {
+        //             name = this.activeThread.firstBlock.args[0].split(' ')[0];
+        //         }
 
-                if (stackTrace == '')
-                {
-                    stackTrace = name + ' => ';
-                } else {
-                    stackTrace = stackTrace + name + ' => ';
-                }
-            }
-            if (typeof(this.activeThread) !== 'undefined')
-            {
-                console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' [' + displayArgs + ']');
-            } else {
-                console.log('Executing: ' + stackTrace + b.op + ' [' + displayArgs + ']');
-            }
-        }
+        //         if (stackTrace == '')
+        //         {
+        //             stackTrace = name + ' => ';
+        //         } else {
+        //             stackTrace = stackTrace + name + ' => ';
+        //         }
+        //     }
+        //     if (typeof(this.activeThread) !== 'undefined')
+        //     {
+        //         console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' [' + displayArgs + ']');
+        //     } else {
+        //         console.log('Executing: ' + stackTrace + b.op + ' [' + displayArgs + ']');
+        //     }
+        // }
 
-        if (b.op == 'broadcast' || b.op == 'broadcast:')
-        {
-            if (b.args[0] == 'createBlock %n %n %n')
-            {
-                b.op = b.op;
-            }
-        }
+        // if (b.op == 'broadcast' || b.op == 'broadcast:')
+        // {
+        //     if (b.args[0] == 'createBlock %n %n %n')
+        //     {
+        //         b.op = b.op;
+        //     }
+        // }
 
         b.primFcn(b);
         if (this.yield) { this.activeThread.nextBlock = b; return; }
@@ -250,9 +250,15 @@ Interpreter.prototype.stepActiveThread = function() {
                         this.activeThread.nextBlock = b; // preserve where it left off
                         return;
                     } else {
-                        if (poppedThread.firstBlock.op == 'procDef')
+                        if (typeof(poppedThread.firstBlock) !== 'undefined')
                         {
-                            this.activeThread = poppedThread;
+                            if (typeof(poppedThread.firstBlock.op) !== 'undefined')
+                            {
+                                if (poppedThread.firstBlock.op == 'procDef')
+                                {
+                                    this.activeThread.firstBlock = poppedThread.firstBlock;
+                                }
+                            }
                         }
                         b = b.nextBlock; // skip and continue for non looping blocks
                     }

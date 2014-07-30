@@ -76,22 +76,27 @@ SensingPrims.prototype.primColorTouchingColor = function(b) {
 };
 
 var spriteHitTest = function(a, b) {
+    var aRect = a.getRect(),
+        bRect = b.getRect();
 
-    var hitCanvas = document.createElement('canvas');
-    hitCanvas.width = 480;
-    hitCanvas.height = 360;
-    var hitTester = hitCanvas.getContext('2d');
-    hitTester.globalCompositeOperation = 'source-over';
-    a.stamp(hitTester, 100);
-    hitTester.globalCompositeOperation = 'source-in';
-    b.stamp(hitTester, 100);
+    if(aRect.intersects(bRect))
+    {
+        var hitCanvas = document.createElement('canvas');
+        hitCanvas.width = 480;
+        hitCanvas.height = 360;
+        var hitTester = hitCanvas.getContext('2d');
+        hitTester.globalCompositeOperation = 'source-over';
+        a.stamp(hitTester, 100);
+        hitTester.globalCompositeOperation = 'source-in';
+        b.stamp(hitTester, 100);
 
-    var aData = hitTester.getImageData(0, 0, 480, 360).data;
+        var aData = hitTester.getImageData(0, 0, 480, 360).data;
 
-    var pxCount = aData.length;
-    for (var i = 0; i < pxCount; i += 4) {
-        if (aData[i+3] > 0) {
-            return true;
+        var pxCount = aData.length;
+        for (var i = 0; i < pxCount; i += 4) {
+            if (aData[i+3] > 0) {
+                return true;
+            }
         }
     }
     return false;

@@ -30,5 +30,5 @@ var Rectangle = function(x, y, width, height) {
 };
 
 Rectangle.prototype.intersects = function(other) {
-    return !(this.left > other.right || this.right < other.left || this.top > other.bottom || this.bottom < other.top);
+    return !((this.left >= other.right || this.right <= other.left) && (this.top >= other.bottom || this.bottom <= other.top));
 };

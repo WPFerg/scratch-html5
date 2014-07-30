@@ -126,25 +126,6 @@ Primitives.prototype.callProcedure = function(b) {
         return result;
     }
 
-    // Method to apply params to a given block
-    function applyParams(Block, Params) {
-
-        // Make sure some params exist
-        if (Params.length > 0)
-        {
-            Block.args[2].op = Params[0];
-            for (var count = 0; count < Block.args[2].args.length; count ++)
-            {
-                Block.args[2].args[count] = Params[count + 1];
-            }
-
-        }
-
-        // Return changed block
-        return Block;
-
-    }
-
     // Gather thread information
     var targetSprite = interp.activeThread.target;
     var currentThreadState = interp.activeThread;
@@ -163,22 +144,68 @@ Primitives.prototype.callProcedure = function(b) {
     }
     interp.threads = newThreads;
 
-    // Locate stack to call in sprite
+    // Locate stack to call in sprite, clone and apply new parameters in thread
     var stackToCall = null;
     for (var count = 0; count < targetSprite.stacks.length; count ++)
     {
         if ( (targetSprite.stacks[count].op == "procDef") && (interp.arg(b, 0) == interp.arg(targetSprite.stacks[count], 0)) )
         {
 
-            targetSprite.stacks[count] = applyParams(targetSprite.stacks[count], passedParams);
+            // Start thread 
             interp.startThread(targetSprite.stacks[count], targetSprite);
+
+            // Generate parameters and save next block link
+            var paramParsedFirstBlock = new Block(passedParams);
+            var nextBlockLink = interp.activeThread.firstBlock.nextBlock;
+
+            var alternateFirstBlock = new Block(['']);
+            //alternateFirstBlock = $.extend(true, alternateFirstBlock, interp.activeThread.firstBlock);
+            alternateFirstBlock.args = [];
+            alternateFirstBlock.isLoop = targetSprite.stacks[count].isLoop;
+            alternateFirstBlock.nextBlock = targetSprite.stacks[count].nextBlock;
+            alternateFirstBlock.op = targetSprite.stacks[count].op;
+            alternateFirstBlock.primFcn = targetSprite.stacks[count].primFcn;
+            alternateFirstBlock.subStack2 = targetSprite.stacks[count].subStack2;
+            alternateFirstBlock.substack = targetSprite.stacks[count].substack;
+            alternateFirstBlock.tmp = targetSprite.stacks[count].tmp;
+
+            var alternateParamBlock = new Block(['']);
+            alternateParamBlock.isLoop = targetSprite.stacks[count].args[2].isLoop;
+            alternateParamBlock.nextBlock = targetSprite.stacks[count].nextBlock;
+            alternateParamBlock.primFcn = targetSprite.stacks[count].args[2].primFcn;
+            alternateParamBlock.subStack2 = targetSprite.stacks[count].args[2].subStack2;
+            alternateParamBlock.substack = targetSprite.stacks[count].args[2].substack;
+            alternateParamBlock.tmp = targetSprite.stacks[count].args[2].tmp;
+
+            // Make sure params are copied
+            if (passedParams.length > 0)
+            {
+                alternateParamBlock.op = passedParams[0];
+                for (var count2 = 0; count2 < alternateParamBlock.args.length; count2 ++)
+                {
+                    alternateParamBlock.args[count2] = passedParams[count2 + 1];
+                }
+
+            }
+
+            // Link two alternate blocks
+            alternateFirstBlock.args.push(targetSprite.stacks[count].args[0]);
+            alternateFirstBlock.args.push(targetSprite.stacks[count].args[1]);
+            alternateFirstBlock.args.push(alternateParamBlock);
+            alternateFirstBlock.args.push(targetSprite.stacks[count].args[3]);
+
+            // Apply parameters to active thread
+            interp.activeThread.firstBlock = alternateFirstBlock;
+            interp.activeThread.nextBlock = alternateFirstBlock;
+
+            // Add existing thread to stack
+            interp.activeThread.paramNestBlockIndex = -1;
+            interp.activeThread.stack = currentThreadState.stack;
+            interp.activeThread.stack.push(currentThreadState);
+            return;
 
         }
     }
-
-    // Add existing thread to stack
-    interp.activeThread.stack = currentThreadState.stack;
-    interp.activeThread.stack.push(currentThreadState);
 
 }
 
@@ -190,52 +217,74 @@ Primitives.prototype.procDef = function(b) {
 
 Primitives.prototype.getParam = function(b) {
 
-    function retrieveParameter(Block)
+    // Currently uses current nest value and does not access procedures which the currently called procedure nests in. These outter procedures
+    // hold the value wanted, the inner called procedure does not.
+
+    // Method to return the index of requested parameter
+    function FindIndex(ThreadStartBlock, ParamName)
     {
-        // Method to return the index of requested parameter
-        function FindIndex(Block, ParamName)
+        if (ThreadStartBlock.args.length == 4)
         {
-            if (Block.args.length == 4)
+            if (ThreadStartBlock.args[1].args.length > 0 || typeof(ThreadStartBlock.args[1].op) != 'undefined')
             {
-                if (Block.args[1].args.length > 0 || typeof(Block.args[1].op) != 'undefined')
+                if (ThreadStartBlock.args[1].op == ParamName)
                 {
-                    if (Block.args[1].op == ParamName)
+                    return 0;
+                } else {
+                    for (var count = 0; count < ThreadStartBlock.args[1].args.length; count ++)
                     {
-                        return 0;
-                    } else {
-                        for (var count = 0; count < Block.args[1].args.length; count ++)
+                        if (ThreadStartBlock.args[1].args[count] == ParamName)
                         {
-                            if (Block.args[1].args[count] == ParamName)
-                            {
-                                return (count + 1);
-                            }
+                            return (count + 1);
                         }
                     }
                 }
             }
-            return -1;
         }
+        return -1;
+    }
+
+    // Method to return the requested parameter value
+    function retrieveParameter(Block, ThreadStartBlock)
+    {
 
         // Calculate a few things first
-        var indexMatch = FindIndex(interp.activeThread.firstBlock, interp.arg(b, 0));
+        var indexMatch = FindIndex(ThreadStartBlock, interp.arg(b, 0));
+
+        // Break if no index found
+        if (indexMatch == -1)
+        {
+            return -1;
+        }
 
         // Return appropriate value
         if (indexMatch == 0)
         {
-            return interp.activeThread.firstBlock.args[2].op;
+            return ThreadStartBlock.args[2].op;
         } else {
-            return interp.activeThread.firstBlock.args[2].args[indexMatch-1];
+            return ThreadStartBlock.args[2].args[indexMatch-1];
         }
     }
 
-    b = retrieveParameter(b);
+    // Update param list block
+    if (interp.activeThread.paramNestBlockIndex == -1)
+    {
+        interp.activeThread.paramNestBlockIndex = interp.activeThread.stack.length;
+    } else {
+        interp.activeThread.stepOutParamNest();
+    }
 
+    // Get the suspected parameter
+    b = retrieveParameter(b, interp.activeThread.getParamNestBlock());
+
+    console.log(interp.activeThread.getParamNestBlock().args[0] + ' > ' + b);
+
+    // Determine if any recusrive call is needed
     if (typeof(b) == 'object' && typeof(b) !== 'number')
     {
-
         return (b.primFcn(b));
-
     } else {
+        interp.activeThread.paramNestBlockIndex = -1;
         return b;
     }
 

@@ -203,8 +203,7 @@ LooksPrims.prototype.createCloneOf = function(b) {
         {
             cloneSprite = new Sprite(runtime.sprites[count].data);
             cloneSprite = $.extend(cloneSprite, runtime.sprites[count]);
-            cloneSprite.cloneID = runtime.cloneID;
-            runtime.cloneID = runtime.cloneID + 1;
+            cloneSprite.cloneID = runtime.requestCloneID();
             break;
         }
     }

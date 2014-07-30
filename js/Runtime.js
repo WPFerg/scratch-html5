@@ -35,8 +35,18 @@ var Runtime = function() {
     this.audioPlaying = [];
     this.notesPlaying = [];
     this.projectLoaded = false;
-    this.cloneID = 0;
+    this.nextCloneID = 0;
+    this.nextThreadID = 0;
 };
+
+Runtime.prototype.requestThreadID = function() {
+    runtime.nextThreadID = runtime.nextThreadID + 1;
+    return runtime.nextThreadID - 1;
+}
+Runtime.prototype.requestCloneID = function() {
+    runtime.nextCloneID = runtime.nextCloneID + 1;
+    return runtime.nextCloneID - 1;
+}
 
 // Initializer for the drawing and audio contexts.
 Runtime.prototype.init = function() {

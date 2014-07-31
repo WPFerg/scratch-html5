@@ -119,7 +119,8 @@ Sprite.prototype.attach = function(scene) {
     // Create textures and materials for each of the costumes.
     var containsErrors = false;
     var sprite = this;
-    for (var c in this.costumes) {
+    var costumeLength = this.costumes.length;
+    for (var c = 0; c < costumeLength; c++) {
         this.textures[c] = document.createElement('img');
         $(this.textures[c])
         .load([this, c], function(evo) {

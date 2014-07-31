@@ -181,9 +181,14 @@ Primitives.prototype.callProcedure = function(b) {
             if (passedParams.length > 0)
             {
                 alternateParamBlock.op = passedParams[0];
-                for (var count2 = 0; count2 < alternateParamBlock.args.length; count2 ++)
+                for (var count2 = 1; count2 < passedParams.length; count2 ++)
                 {
-                    alternateParamBlock.args[count2] = passedParams[count2 + 1];
+                    if (passedParams[count2] == 'object')
+                    {
+                        alternateParamBlock.args[count2-1] = passedParams[count2].primFcn(passedParams[count2]);
+                    } else {
+                        alternateParamBlock.args[count2-1] = passedParams[count2];
+                    }
                 }
 
             }
@@ -267,6 +272,7 @@ Primitives.prototype.getParam = function(b) {
     }
 
     // Update param list block
+    interp.activeThread.paramNestBlockIndex = -1; // tempory fix
     if (interp.activeThread.paramNestBlockIndex == -1)
     {
         interp.activeThread.paramNestBlockIndex = interp.activeThread.stack.length;
@@ -274,10 +280,11 @@ Primitives.prototype.getParam = function(b) {
         interp.activeThread.stepOutParamNest();
     }
 
+    var debugString = 'T' + interp.activeThread.paramNestBlockIndex + ' ~ ' + interp.activeThread.firstBlock.args[0].split(' ')[0] + ' > '
+                      + interp.activeThread.getParamNestBlock().args[0].split(' ')[0] + '[' + interp.arg(b, 0);
+
     // Get the suspected parameter
     b = retrieveParameter(b, interp.activeThread.getParamNestBlock());
-
-    console.log(interp.activeThread.getParamNestBlock().args[0] + ' > ' + b);
 
     // Determine if any recusrive call is needed
     if (typeof(b) == 'object' && typeof(b) !== 'number')
@@ -285,6 +292,7 @@ Primitives.prototype.getParam = function(b) {
         return (b.primFcn(b));
     } else {
         interp.activeThread.paramNestBlockIndex = -1;
+        console.log(debugString + ']  :|:  ' + b);
         return b;
     }
 

@@ -44,7 +44,7 @@ LooksPrims.prototype.addPrimsTo = function(primTable) {
     primTable['filterReset']             = this.primClearEffects;
 
     primTable['createCloneOf']      = this.createCloneOf;
-    primTable['whenCloned']         = interp.primNoop;
+    primTable['whenCloned']         = function(b) { };
     primTable['deleteClone']        = this.deleteClone;
 
     primTable['say:'] = function(b) { showBubble(b, 'say'); };

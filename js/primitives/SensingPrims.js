@@ -81,10 +81,10 @@ var spriteHitTest = function(a, b) {
 
     if(aRect.intersects(bRect))
     {
-        var left = Math.min(aRect.left, bRect.left),
-            top = Math.min(aRect.top, bRect.top),
-            right = Math.max(aRect.right, bRect.right),
-            bottom = Math.max(aRect.bottom, bRect.bottom);
+        var left = Math.max(aRect.left, bRect.left),
+            top = Math.max(aRect.top, bRect.top),
+            right = Math.min(aRect.right, bRect.right),
+            bottom = Math.min(aRect.bottom, bRect.bottom);
 
         var hitCanvas = document.createElement('canvas');
         hitCanvas.width = 480;
@@ -95,7 +95,7 @@ var spriteHitTest = function(a, b) {
         hitTester.globalCompositeOperation = 'source-in';
         b.stamp(hitTester, 100);
 
-        var aData = hitTester.getImageData(left, top, right-left, bottom-top).data;
+        var aData = hitTester.getImageData(left, top, right, bottom).data;
 
         var pxCount = aData.length;
         for (var i = 0; i < pxCount; i += 4) {

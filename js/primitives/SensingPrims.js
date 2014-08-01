@@ -81,10 +81,10 @@ var spriteHitTest = function(a, b) {
 
     if(aRect.intersects(bRect))
     {
-        var left = Math.max(aRect.left, bRect.left),
-            top = Math.max(aRect.top, bRect.top),
-            right = Math.min(aRect.right, bRect.right),
-            bottom = Math.min(aRect.bottom, bRect.bottom);
+        var left = Math.min(aRect.left, bRect.left),
+            top = Math.min(aRect.top, bRect.top),
+            width = Math.max(aRect.right, bRect.right) - left,
+            height = Math.max(aRect.bottom, bRect.bottom) - top;
 
         var hitCanvas = document.createElement('canvas');
         hitCanvas.width = 480;
@@ -95,7 +95,7 @@ var spriteHitTest = function(a, b) {
         hitTester.globalCompositeOperation = 'source-in';
         b.stamp(hitTester, 100);
 
-        var aData = hitTester.getImageData(left, top, right, bottom).data;
+        var aData = hitTester.getImageData(left, top, width, height).data;
 
         var pxCount = aData.length;
         for (var i = 0; i < pxCount; i += 4) {
@@ -108,6 +108,7 @@ var spriteHitTest = function(a, b) {
 };
 
 var stageColorHitTest = function(target, color) {
+
     var r, g, b;
     // [SCOTT LOGIC] - added & 255 to first value, fixing negative number issues
     r = (color >> 16 & 255);
@@ -143,14 +144,6 @@ var stageColorHitTest = function(target, color) {
         if (meshData[i+3] > 0 && hitData[i] == r && hitData[i+1] == g && hitData[i+2] == b)
         {
             return true;
-        }
-        if (meshData[i+3] > 0)
-        {
-            hitData[i] = 0;
-            hitData[i+1] = 0;
-            hitData[i+2] = 0;
-            stageContext.fillStyle = "rgba(0,0,0,1)";
-            stageContext.fillRect(i % 480, Math.floor(i/480), 1, 1);
         }
     }
 

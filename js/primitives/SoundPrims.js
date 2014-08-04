@@ -48,6 +48,11 @@ var playSound = function(snd) {
     snd.source.buffer = snd.buffer;
     snd.source.connect(runtime.audioGain);
 
+    // Slow down playback so actualDuration becomes expectedDuration -- solves frequency issues from the AudioContext being 48kHz and the samples being 44.1kHz.
+    var expectedDuration = snd.sampleCount / snd.rate;
+    var actualDuration = snd.buffer.duration;
+    snd.source.playbackRate.value = actualDuration / expectedDuration;
+
     // Track the sound's completion state
     snd.source.done = false;
     snd.source.finished = function() {
@@ -60,7 +65,7 @@ var playSound = function(snd) {
             runtime.audioPlaying.splice(i, 1);
         }
     }
-    window.setTimeout(snd.source.finished, snd.buffer.duration * 1000);
+    window.setTimeout(snd.source.finished, expectedDuration * 1000);
     // Add the global list of playing sounds and start playing.
     runtime.audioPlaying.push(snd);
     snd.source.start();

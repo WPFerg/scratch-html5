@@ -42,6 +42,7 @@ var Sprite = function(data) {
     this.costumes = data.costumes || [];
     this.currentCostumeIndex = Math.floor(data.currentCostumeIndex) || 0;
     this.previousCostumeIndex = -1;
+    this.oldTransformData = {};
 
     this.objName = data.objName || '';
 
@@ -321,33 +322,39 @@ Sprite.prototype.updateTransform = function()
         // sign to the X scale.
     }
 
-    $(this.mesh).css(
-        'transform',
-        'translatex(' + drawX + 'px) ' +
-        'translatey(' + drawY + 'px) ' +
-        'rotate(' + this.rotation + 'deg) ' +
-        'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')'
-    );
-    $(this.mesh).css(
-        '-moz-transform',
-        'translatex(' + drawX + 'px) ' +
-        'translatey(' + drawY + 'px) ' +
-        'rotate(' + this.rotation + 'deg) ' +
-        'scaleX(' + scaleXprepend + this.scale + ') scaleY(' +  this.scale / resolution + ')'
-    );
-    $(this.mesh).css(
-        '-webkit-transform',
-        'translatex(' + drawX + 'px) ' +
-        'translatey(' + drawY + 'px) ' +
-        'rotate(' + this.rotation + 'deg) ' +
-        'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')'
-    );
+    // if(!(this.oldTransformData.drawX == drawX && this.oldTransformData.drawY == drawY &&
+    //      this.oldTransformData.rotation == this.rotation && this.oldTransformData.scale == this.scale
+    //      && this.oldTransformData.scaleXprepend == scaleXprepend && this.oldTransformData.resolution == resolution))
+    // {   
 
-    $(this.mesh).css('-webkit-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
-    $(this.mesh).css('-moz-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
-    $(this.mesh).css('-ms-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
-    $(this.mesh).css('-o-transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
-    $(this.mesh).css('transform-origin', rotationCenterX + 'px ' + rotationCenterY + 'px');
+        this.mesh.style.transform =                    'translatex(' + drawX + 'px) ' +
+                    'translatey(' + drawY + 'px) ' +
+                    'rotate(' + this.rotation + 'deg) ' +
+                    'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')';
+        
+        this.mesh.style.mozTransform =                    'translatex(' + drawX + 'px) ' +
+                    'translatey(' + drawY + 'px) ' +
+                    'rotate(' + this.rotation + 'deg) ' +
+                    'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  this.scale / resolution + ')';
+        
+        this.mesh.style.webkitTransform =                    'translatex(' + drawX + 'px) ' +
+                    'translatey(' + drawY + 'px) ' +
+                    'rotate(' + this.rotation + 'deg) ' +
+                    'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')';
+
+        // this.oldTransformData = { "drawX": drawX, "drawY": drawY, "rotation": this.rotation, "scale": this.scale, "scaleXprepend": scaleXprepend, "resolution": resolution};
+    // }
+
+    // Transform origin is constant, if it's not been added, add it.
+    if(this.mesh.style.transformOrigin)
+    {
+        
+            this.mesh.style.webkitTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+            this.mesh.style.mozTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+            this.mesh.style.msTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+            this.mesh.style.oTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+            this.mesh.style.transformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+    }
 
     // Don't forget to update the talk bubble.
     if (this.talkBubble) {

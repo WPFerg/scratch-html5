@@ -27,9 +27,9 @@ SoundPrims.prototype.addPrimsTo = function(primTable) {
     primTable['noteOn:duration:elapsed:from:'] = this.primPlayNote;
     primTable['instrument:'] = this.primSetInstrument;
 
-    /*primTable['changeVolumeBy:'] = this.primChangeVolume;
+    primTable['changeVolumeBy:'] = this.primChangeVolume;
     primTable['setVolumeTo:'] = this.primSetVolume;
-    primTable['volume'] = this.primVolume;*/
+    primTable['volume'] = this.primVolume;
 
     primTable['changeTempoBy:'] = function(b) { runtime.stage.data.tempoBPM = runtime.stage.data.tempoBPM + interp.arg(b, 0); };
     primTable['setTempoTo:'] = function(b) { runtime.stage.data.tempoBPM = interp.arg(b, 0); };
@@ -46,7 +46,7 @@ var playSound = function(snd) {
 
     snd.source = runtime.audioContext.createBufferSource();
     snd.source.buffer = snd.buffer;
-    snd.source.connect(runtime.audioGain);
+    snd.source.connect(interp.targetSprite().audioGain);
 
     // Slow down playback so actualDuration becomes expectedDuration -- solves frequency issues from the AudioContext being 48kHz and the samples being 44.1kHz.
     var expectedDuration = snd.sampleCount / snd.rate;
@@ -205,15 +205,23 @@ SoundPrims.prototype.primStopAllSounds = function(b) {
 
 SoundPrims.prototype.primChangeVolume = function(b) {
     var s = interp.targetSprite();
-    if (s != null) s.volume += interp.numarg(b, 0);
+    if (s != null)
+    {
+        s.audioGain.gain.value += interp.numarg(b, 0) / 100;
+        interp.doRedraw = true;
+    }
 };
 
 SoundPrims.prototype.primSetVolume = function(b) {
     var s = interp.targetSprite();
-    if (s != null) s.volume = interp.numarg(b, 0);
+    if (s != null)
+    {
+        s.audioGain.gain.value = interp.numarg(b, 0) / 100;
+        interp.doRedraw = true;
+    }
 };
 
 SoundPrims.prototype.primVolume = function(b) {
     var s = interp.targetSprite();
-    return s != null ? s.volume : 0;
+    return s != null ? s.audioGain.gain.value * 100 : 0;
 };

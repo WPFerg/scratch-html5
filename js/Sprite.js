@@ -96,6 +96,13 @@ var Sprite = function(data) {
     this.soundsLoaded = 0;
     this.instrument = 1;
 
+    try {
+        this.audioGain = runtime.audioContext.createGain();
+    } catch(err) {
+        this.audioGain = runtime.audioContext.createGainNode();
+    }
+    this.audioGain.connect(runtime.audioContext.destination)
+
     // Image effects
     this.filters = {
         color: 0,

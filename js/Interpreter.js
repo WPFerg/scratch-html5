@@ -49,10 +49,16 @@ var Thread = function(block, target) {
 
 Thread.prototype.getParamNestBlock = function() {
 
+    return this.getCallNestFromIndex(this.paramNestBlockIndex);
+
+}
+
+Thread.prototype.getCallNestFromIndex = function(CallIndex) {
+
     // Determine correct result
-    if (this.paramNestBlockIndex == -1) { return null; }
-    if (this.paramNestBlockIndex == this.stack.length) { return this.firstBlock; }
-    if (this.paramNestBlockIndex >= 0) { return this.stack[this.paramNestBlockIndex].firstBlock; }
+    if (CallIndex == -1) { return null; }
+    if (CallIndex == this.stack.length) { return this.firstBlock; }
+    if (CallIndex >= 0) { return this.stack[CallIndex].firstBlock; }
 
     console.log('ERROR : paramNestBlockIndex does not apply to any block.');
     return null;
@@ -61,8 +67,14 @@ Thread.prototype.getParamNestBlock = function() {
 
 Thread.prototype.stepOutParamNest = function() {
 
+    this.paramNestBlockIndex = this.stepOutCallNest(this.paramNestBlockIndex);
+
+}
+
+Thread.prototype.sepOutCallNest = function(CurrentIndex) {
+
     // Find next valid param block
-    var workingIndex = this.paramNestBlockIndex - 1;
+    var workingIndex = CurrentIndex - 1;
     while (this.stack.length > 0 &&
            workingIndex > 0 &&
            ( typeof(this.stack[workingIndex]) != 'object' ||
@@ -73,11 +85,9 @@ Thread.prototype.stepOutParamNest = function() {
     
     if (this.stack.length > 0 && workingIndex >= 0)
     {
-        this.paramNestBlockIndex = workingIndex;
         return workingIndex;
     } else {
         console.log('ERROR : Trying to recurse back up to a higher level where no higher level thread exists.');
-        this.paramNestBlockIndex = -1;
         return -1;
     }
 
@@ -252,12 +262,14 @@ Interpreter.prototype.stepActiveThread = function() {
         //             stackTrace = stackTrace + name + ' => ';
         //         }
         //     }
+        //     var consoleLog = '';
         //     if (typeof(this.activeThread) !== 'undefined')
         //     {
-        //         console.log('Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' [' + displayArgs + ']');
+        //         consoleLog = 'Executing: ' + this.activeThread.target.objName + ' :|: ' + stackTrace + b.op + ' [' + displayArgs + ']';
         //     } else {
-        //         console.log('Executing: ' + stackTrace + b.op + ' [' + displayArgs + ']');
+        //         consoleLog = 'Executing: ' + stackTrace + b.op + ' [' + displayArgs + ']';
         //     }
+        //     console.log(consoleLog);
         // }
 
         b.primFcn(b);

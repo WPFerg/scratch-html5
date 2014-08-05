@@ -89,6 +89,7 @@ function Scratch(project_id) {
     // Canvas container mouse events
     $('#container').mousedown(function(e) {
         runtime.mouseDown = true;
+
         // Stop iOS scrolling
         e.preventDefault();
     });
@@ -106,48 +107,54 @@ function Scratch(project_id) {
     });
 
     // Touch events - EXPERIMENTAL
-    $(window).bind('touchstart', function(e) {
-        // On iOS, we need to activate the Web Audio API
-        // with an empty sound play on the first touch event.
-        if (!iosAudioActive) {
-            var ibuffer = runtime.audioContext.createBuffer(1, 1, 22050);
-            var isource = runtime.audioContext.createBufferSource();
-            isource.buffer = ibuffer;
-            isource.connect(runtime.audioContext.destination);
-            isource.start();
-            iosAudioActive = true;
-        }
-    });
+    // $(window).bind('touchstart', function(e) {
+    //     // On iOS, we need to activate the Web Audio API
+    //     // with an empty sound play on the first touch event.
+    //     if (!iosAudioActive) {
+    //         var ibuffer = runtime.audioContext.createBuffer(1, 1, 22050);
+    //         var isource = runtime.audioContext.createBufferSource();
+    //         isource.buffer = ibuffer;
+    //         isource.connect(runtime.audioContext.destination);
+    //         isource.start();
+    //         iosAudioActive = true;
+    //     }
+    // });
 
     $('#container').bind('touchstart', function(e) {
-        runtime.mouseDown = true;
-        // Stop IOS Scrolling
-        e.preventDefault();
+        if (!runtime.mouseDown)
+        {
+            evt.preventDefault();
+            var touch = evt.originalEvent.touches[0] || evt.originalEvent.changedTouches[0];
+            var bb = document.getElementById('container').getBoundingClientRect();
+            var absX = (touch.clientX - bb.left) / Scalar();
+            var absY = (touch.clientY - bb.top) / Scalar();
+            runtime.mousePos = [absX-240, -absY+180];
+        }
+        $('#container').trigger('mousedown');
     });
 
     $('#container').bind('touchend', function(e) {
-        runtime.mouseDown = true;
-        // Stop IOS Scrolling
-        e.preventDefault();
+        $('#container').trigger('mouseup');
     });
 
     $('#container').bind('touchmove', function(e) {
-        var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-        var bb = this.getBoundingClientRect();
+        evt.preventDefault();
+        var touch = evt.originalEvent.touches[0] || evt.originalEvent.changedTouches[0];
+        var bb = document.getElementById('container').getBoundingClientRect();
         var absX = (touch.clientX - bb.left) / Scalar();
         var absY = (touch.clientY - bb.top) / Scalar();
         runtime.mousePos = [absX-240, -absY+180];
     });
 
     // Border touch events - EXPERIMENTAL
-    $('#left').bind('touchstart touchmove', function(e) { runtime.keysDown[37] = true; runtime.startKeyHats(37); });
-    $('#left').bind('touchend', function(e) { delete runtime.keysDown[37]; });
-    $('#up').bind('touchstart touchmove', function(e) { runtime.keysDown[38] = true; runtime.startKeyHats(38); });
-    $('#up').bind('touchend', function(e) { delete runtime.keysDown[38]; });
-    $('#right').bind('touchstart touchmove', function(e) { runtime.keysDown[39] = true; runtime.startKeyHats(39); });
-    $('#right').bind('touchend', function(e) { delete runtime.keysDown[39]; });
-    $('#down').bind('touchstart touchmove', function(e) { runtime.keysDown[40] = true; runtime.startKeyHats(40); });
-    $('#down').bind('touchend', function(e) { delete runtime.keysDown[40]; });
+    // $('#left').bind('touchstart touchmove', function(e) { runtime.keysDown[37] = true; runtime.startKeyHats(37); });
+    // $('#left').bind('touchend', function(e) { delete runtime.keysDown[37]; });
+    // $('#up').bind('touchstart touchmove', function(e) { runtime.keysDown[38] = true; runtime.startKeyHats(38); });
+    // $('#up').bind('touchend', function(e) { delete runtime.keysDown[38]; });
+    // $('#right').bind('touchstart touchmove', function(e) { runtime.keysDown[39] = true; runtime.startKeyHats(39); });
+    // $('#right').bind('touchend', function(e) { delete runtime.keysDown[39]; });
+    // $('#down').bind('touchstart touchmove', function(e) { runtime.keysDown[40] = true; runtime.startKeyHats(40); });
+    // $('#down').bind('touchend', function(e) { delete runtime.keysDown[40]; });
 
     // Load the interpreter and primitives
     interp = new Interpreter();

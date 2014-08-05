@@ -233,7 +233,7 @@ LooksPrims.prototype.deleteClone = function(b) {
     // Remove reference to clone and end thread
     for (var count = 0; count < runtime.sprites.length; count ++)
     {
-        if (runtime.sprites[count] == interp.activeThread.target &&
+        if (runtime.sprites[count] === interp.activeThread.target &&
             typeof(runtime.sprites[count].cloneID) !== 'undefined' &&
             typeof(interp.activeThread.target.cloneID) !== 'undefined')
         {

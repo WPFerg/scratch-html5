@@ -119,6 +119,7 @@ Sprite.prototype.attach = function(scene) {
     // Create textures and materials for each of the costumes.
     var containsErrors = false;
     var sprite = this;
+    var HiJackResult = null;
     for (var c in this.costumes) {
         this.textures[c] = document.createElement('img');
         $(this.textures[c])
@@ -133,20 +134,72 @@ Sprite.prototype.attach = function(scene) {
             $(sprite.textures[c]).css('position', 'absolute').css('left', '0px').css('top', '0px');
             $(sprite.textures[c]).bind('dragstart', function(evt) { evt.preventDefault(); })
                 .bind('selectstart', function(evt) { evt.preventDefault(); })
-                .bind('touchend', function(evt) { sprite.onClick(evt); $(this).addClass('touched'); })
+                .mousedown(function(evt) {
+                    evt.preventDefault();
+                    var bb = document.getElementById('container').getBoundingClientRect();
+                    var absX = (evt.clientX - bb.left) / Scalar();
+                    var absY = (evt.clientY - bb.top) / Scalar();
+                    runtime.mousePos = [absX-240, -absY+180];
+                    runtime.mouseDown = true;
+                    sprite.onClick(evt);
+                })
+                .mousemove(function(evt) {
+                    var bb = document.getElementById('container').getBoundingClientRect();
+                    var absX = (evt.clientX - bb.left) / Scalar();
+                    var absY = (evt.clientY - bb.top) / Scalar();
+                    runtime.mousePos = [absX-240, -absY+180];
+                })
+                .mouseup(function (evt) {
+                    evt.preventDefault();
+                    runtime.mouseDown = false;
+                })
+                .bind('touchstart', function(evt) {
+                    evt.preventDefault();
+                    var touch = evt.originalEvent.touches[0] || evt.originalEvent.changedTouches[0];
+                    var bb = document.getElementById('container').getBoundingClientRect();
+                    var absX = (touch.clientX - bb.left) / Scalar();
+                    var absY = (touch.clientY - bb.top) / Scalar();
+                    runtime.mousePos = [absX-240, -absY+180];
+                    runtime.mouseDown = true;
+                    sprite.onClick(evt);
+                })
+                .bind('touchmove', function(evt) {
+                    var touch = evt.originalEvent.touches[0] || evt.originalEvent.changedTouches[0];
+                    var bb = document.getElementById('container').getBoundingClientRect();
+                    var absX = (touch.clientX - bb.left) / Scalar();
+                    var absY = (touch.clientY - bb.top) / Scalar();
+                    runtime.mousePos = [absX-240, -absY+180];
+                })
+                .bind('touchend', function(evt) {
+                    evt.preventDefault();
+                    runtime.mouseDown = false;
+                    sprite.onClick(evt);
+                    //$(this).addClass('touched');
+                })
                 .click(function(evt) {
+                    return;
                     if (!$(this).hasClass('touched')) {
                         sprite.onClick(evt);
                     } else {
                         $(this).removeClass('touched');
                     }
                 });
-            scene.append($(sprite.textures[c]));
+
+            // Hijack sprite for SLScratch manipulation
+            HiJackResult = HijackScratchSprite(sprite, sprite.textures[c]);
+            if (HiJackResult == null)
+            {
+                scene.append($(sprite.textures[c]));
+            }
+
         }).error(function(error) { sprite.costumesLoaded += 1; if(!containsErrors) { containsErrors = true; alert("This project contains errors and corrupted files. Proceed at your own risk."); } }).attr({
              'crossOrigin': 'anonymous',
              'src': io.asset_base + this.costumes[c].baseLayerMD5 + io.asset_suffix
         });
     }
+
+    // Push over changes to the sprite
+    if (HiJackResult !== null) { sprite = HiJackResult; }
 
     this.mesh = this.textures[this.currentCostumeIndex];
     this.updateLayer();
@@ -242,22 +295,38 @@ Sprite.prototype.onClick = function(evt) {
         // by rendering the sprite on a canvas.  With an SVG,
         // we are forced not to do this for now by Chrome/Webkit SOP:
         // http://code.google.com/p/chromium/issues/detail?id=68568
+
+        var bb = document.getElementById('container').getBoundingClientRect();
+
         var canv = document.createElement('canvas');
-        canv.width = 480;
-        canv.height = 360;
+        canv.width = 480 + bb.left * 2 / Scalar();
+        canv.height = 360 + bb.top * 2 / Scalar();
         var ctx = canv.getContext('2d');
+
         var drawWidth = this.textures[this.currentCostumeIndex].width;
         var drawHeight = this.textures[this.currentCostumeIndex].height;
-        var scale = this.scale / (this.costumes[this.currentCostumeIndex].bitmapResolution || 1);
+
+        var drawX = this.scratchX + (480 / 2) + bb.left / Scalar();
+        var drawY = -this.scratchY + (360 / 2) + bb.top / Scalar();
+
+        var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
+
         var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
         var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
-        ctx.translate(240 + this.scratchX, 180 - this.scratchY);
-        ctx.rotate(this.rotation * Math.PI / 180.0);
-        ctx.scale(scale, scale);
-        ctx.translate(-rotationCenterX, -rotationCenterY);
-        ctx.drawImage(this.mesh, 0, 0);
 
-        var idata = ctx.getImageData(mouseX, mouseY, 1, 1).data;
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.translate(drawX, drawY); 
+        ctx.scale(this.scale / resolution, this.scale / resolution);
+        ctx.rotate(this.rotation * Math.PI / 180.0); //testing purposes
+        ctx.drawImage(this.mesh, -rotationCenterX, -rotationCenterY, drawWidth, drawHeight);
+        ctx.restore();
+
+        var checkX = Math.floor((runtime.mousePos[0] + 240) + bb.left / Scalar());
+        var checkY = Math.floor((180 - runtime.mousePos[1]) + bb.top / Scalar());
+        var idata = ctx.getImageData(checkX, checkY, 1, 1).data;
+
+        // var idata = ctx.getImageData(mouseX, mouseY, 1, 1).data;
         var alpha = idata[3];
     } else {
         var alpha = 1;

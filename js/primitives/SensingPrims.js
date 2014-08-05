@@ -96,8 +96,8 @@ var spriteHitTest = function(a, b) {
         b.stamp(hitTester, 100);
 
         var aData = hitTester.getImageData(left, top, right, bottom).data;
-
         var pxCount = aData.length;
+
         for (var i = 0; i < pxCount; i += 4) {
             if (aData[i+3] > 0) {
                 return true;

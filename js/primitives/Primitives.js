@@ -220,7 +220,7 @@ Primitives.prototype.procDef = function(b) {
 
 }
 
-Primitives.prototype.getParam = function(b) {
+Primitives.prototype.getParam = function(b, CallNestIndex) {
 
     // Currently uses current nest value and does not access procedures which the currently called procedure nests in. These outter procedures
     // hold the value wanted, the inner called procedure does not.

@@ -3,6 +3,39 @@
    is embeddable.
 */
 
+#dpad-control
+{
+    background-image: url(img/dpad.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: absolute;
+    min-width: 150px;
+    min-height: 150px;
+    z-index: 10001;
+}
+
+#a-button-control
+{
+    background-image: url(img/aButton.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: absolute;
+    min-width: 70px;
+    min-height: 70px;
+    z-index: 10001;
+}
+
+#b-button-control
+{
+    background-image: url(img/bButton.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: absolute;
+    min-width: 70px;
+    min-height: 70px;
+    z-index: 10001;
+}
+
 #player-container
 {
     /*position: relative;*/

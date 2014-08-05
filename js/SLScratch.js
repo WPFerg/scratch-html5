@@ -27,6 +27,8 @@ function IsLandscape()
 function Scalar()
 {
 
+    // return 1;
+
 	// Intialize calculation variables
 	var width = $('html').width();
 	var height = $('html').height();
@@ -52,6 +54,115 @@ function Scalar()
 }
 
 
+// Catch any sprites created which are used by the html code
+function HijackScratchSprite(Sprite, IMGElement)
+{
+
+    // Create JQuery accessor
+    var JQuerySprite = null;
+
+    // Determine if current sprite is dpad
+    if (Sprite.objName == 'dpad_slscratch')
+    {
+
+        // Link jquery accessor
+        JQuerySprite = $(IMGElement);
+        JQuerySprite.attr('id', 'dpad-control');
+
+        // Create original scratch X and Y variables
+        if (typeof(JQuerySprite.originalScratchX) == 'undefined') { JQuerySprite.originalScratchX = JQuerySprite.scratchX; }
+        if (typeof(JQuerySprite.originalScratchY) == 'undefined') { JQuerySprite.originalScratchY = JQuerySprite.scratchY; }
+
+        // Generate altered scratch coordinates after saving originals
+        Sprite.scratchOrigX = Sprite.scratchX;
+        Sprite.scratchOrigY = Sprite.scratchY;
+        Sprite.scratchX = Sprite.scratchOrigX - parseInt($('#player-container').css('left')) / Scalar();
+        Sprite.scratchY = Sprite.scratchOrigY - parseInt($('#player-container').css('top')) / Scalar();
+
+        // Set one time style settigns
+        JQuerySprite.css('z-index', '10001');
+
+        // Add element to page
+        $('#player-container').append(IMGElement);
+
+        // Position sprite and return object to save changes
+        Sprite.updateTransform();
+        return Sprite;
+
+    }
+
+    if (Sprite.objName == 'aButton_slscratch' || Sprite.objName == 'bButton_slscratch')
+    {
+
+        // Link jquery accessor
+        JQuerySprite = $(IMGElement);
+        if (Sprite.objName == 'aButton_slscratch') { JQuerySprite.attr('id', 'a-button-control'); }
+        if (Sprite.objName == 'bButton_slscratch') { JQuerySprite.attr('id', 'b-button-control'); }
+
+        // Create original scratch X and Y variables
+        if (typeof(JQuerySprite.originalScratchX) == 'undefined') { JQuerySprite.originalScratchX = JQuerySprite.scratchX; }
+        if (typeof(JQuerySprite.originalScratchY) == 'undefined') { JQuerySprite.originalScratchY = JQuerySprite.scratchY; }
+
+        // Generate altered scratch coordinates after saving originals
+        Sprite.scratchOrigX = Sprite.scratchX;
+        Sprite.scratchOrigY = Sprite.scratchY;
+        Sprite.scratchX = Sprite.scratchOrigX + parseInt($('#player-container').css('left')) / Scalar();
+        Sprite.scratchY = Sprite.scratchOrigY - parseInt($('#player-container').css('top')) / Scalar();
+
+        // Set one time style settigns
+        JQuerySprite.css('z-index', '10001');
+
+        // Add element to page
+        $('#player-container').append(IMGElement);
+
+        // Position sprite and return object to save changes
+        Sprite.updateTransform();
+        return Sprite;
+
+    }
+
+    RepositionControllers();
+
+    // Return hijack result
+    return null;
+
+}
+
+// Calculate controller positions and scales
+function RepositionControllers()
+{
+
+    return;
+
+    // Terminate if runtime is not made yet
+    if (typeof(runtime) == 'undefined') { return; }
+
+    // List of ID's to listen for
+    var TargetIDs = ['dpad_slscratch', 'aButton_slscratch', 'bButton_slscratch'];
+
+    // Find ID's in system
+    for (var targetIndex = 0; targetIndex < TargetIDs.length; targetIndex ++)
+    {
+        for (var count = 0; count < runtime.sprites.length; count ++)
+        {
+            if (typeof(runtime.sprites[count]) == 'object' &&
+                runtime.sprites[count].constructor == Sprite && 
+                runtime.sprites[count].objName == TargetIDs[targetIndex])
+            {
+                // Set side switcher
+                var SideSwitch = 1;
+                TargetIDs[targetIndex].objName == 'dpad_slscratch' ? SideSwitch = -1 : SideSwitch = 1;
+
+                // Set new positions
+                runtime.sprites[count].scratchX = runtime.sprites[count].scratchOrigX - parseInt($('#player-container').css('left')) / Scalar();
+                runtime.sprites[count].scratchY = runtime.sprites[count].scratchOrigY - parseInt($('#player-container').css('top')) / Scalar();
+                if (typeof(runtime.sprites[count].updateTransform) !== 'undefined') { runtime.sprites[count].updateTransform(); }
+            }
+        }
+    }
+
+}
+
 // Calculate positions of objects which are relative to the landscape
 function AdjustForOrientation()
 {
@@ -68,22 +179,14 @@ function AdjustForOrientation()
 	$('#player-container').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
 	$('#player-container').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
 
-    // Debugging canvas code
-    // var displayCanvas = document.createElement('canvas');
-    // displayCanvas.width = 480;
-    // displayCanvas.height = 360;
-    // var displayTester = displayCanvas.getContext('2d');
-    // //displayTester.globalCompositeOperation = 'source-over';
-    // a.stamp(displayTester, 100);
-    // //displayTester.globalCompositeOperation = 'source-in';
-    // b.stamp(displayTester, 100);
-    // $('#hit-canvas').html(displayCanvas);
-    
     // Debugging canvas
     $('#hit-canvas').css('-webkit-transform-origin', '0 0');
     $('#hit-canvas').css('-webkit-transform', 'scale(' + (Scalar()).toString() + ')');
-    $('#hit-canvas').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
-    $('#hit-canvas').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
+    // $('#hit-canvas').css('left', (($('html').width() - $('#player-container').width() * Scalar()) / 2).toString() + 'px');
+    // $('#hit-canvas').css('top', (($('html').height() - $('#player-container').height() * Scalar()) / 2).toString() + 'px');
+
+    // Reposition controllers with new dimensions
+    RepositionControllers();
 
     // Declare variables
     var GButton = $('#trigger-green-flag');

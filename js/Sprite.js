@@ -200,6 +200,7 @@ Sprite.prototype.isLoaded = function() {
 
 // Step methods
 Sprite.prototype.showCostume = function(costume) {
+    if(this.currentCostumeIndex === costume) return;
     if (costume < 0) {
         costume += this.costumes.length;
     }
@@ -290,9 +291,9 @@ Sprite.prototype.setVisible = function(v) {
 };
 
 Sprite.prototype.updateLayer = function() {
-    $(this.mesh).css('z-index', this.z);
-    if (this.talkBubble) this.talkBubble.css('z-index', this.z);
-    if (this.askInput) this.askInput.css('z-index', this.z);
+    this.mesh.style.zIndex = this.z;
+    if (this.talkBubble) this.talkBubble[0].style.zIndex = this.z;
+    if (this.askInput) this.askInput[0].style.zIndex = this.z;
 };
 
 Sprite.prototype.updateVisible = function() {
@@ -304,11 +305,7 @@ Sprite.prototype.updateVisible = function() {
 Sprite.prototype.updateTransform = function()
 {
 
-    var texture = this.textures[this.currentCostumeIndex];
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
-
-    var drawWidth = texture.width * this.scale / resolution;
-    var drawHeight = texture.height * this.scale / resolution;
 
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
     var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;
@@ -359,8 +356,8 @@ Sprite.prototype.updateTransform = function()
     // Don't forget to update the talk bubble.
     if (this.talkBubble) {
         var xy = this.getTalkBubbleXY();
-        this.talkBubble.css('left', xy[0] + 'px');
-        this.talkBubble.css('top', xy[1] + 'px');
+        this.talkBubble[0].style.left = xy[0] + 'px';
+        this.talkBubble[0].style.top = xy[1] + 'px';
     }
 
     this.updateLayer();

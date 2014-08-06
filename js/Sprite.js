@@ -304,11 +304,7 @@ Sprite.prototype.updateVisible = function() {
 Sprite.prototype.updateTransform = function()
 {
 
-    var texture = this.textures[this.currentCostumeIndex];
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
-
-    var drawWidth = texture.width * this.scale / resolution;
-    var drawHeight = texture.height * this.scale / resolution;
 
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
     var rotationCenterY = this.costumes[this.currentCostumeIndex].rotationCenterY;

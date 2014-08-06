@@ -87,15 +87,16 @@ var spriteHitTest = function(a, b) {
             height = Math.max(aRect.bottom, bRect.bottom) - top;
 
         var hitCanvas = document.createElement('canvas');
-        hitCanvas.width = 480;
-        hitCanvas.height = 360;
+        hitCanvas.width = width;
+        hitCanvas.height = height;
         var hitTester = hitCanvas.getContext('2d');
+        hitTester.translate(-left, -top);
         hitTester.globalCompositeOperation = 'source-over';
         a.stamp(hitTester, 100);
         hitTester.globalCompositeOperation = 'source-in';
         b.stamp(hitTester, 100);
 
-        var aData = hitTester.getImageData(left, top, width, height).data;
+        var aData = hitTester.getImageData(0, 0, width, height).data;
 
         var pxCount = aData.length;
         for (var i = 0; i < pxCount; i += 4) {

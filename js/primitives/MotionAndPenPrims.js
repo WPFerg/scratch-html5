@@ -79,6 +79,7 @@ MotionAndPenPrims.prototype.primTurnRight = function(b) {
 
 MotionAndPenPrims.prototype.primSetDirection = function(b) {
     var s = interp.targetSprite();
+    if(s.rotation == interp.numarg(b,0)) return;
     s.setDirection(interp.numarg(b, 0));
     if (s.visible) interp.redraw();
 };

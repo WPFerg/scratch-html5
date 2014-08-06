@@ -200,6 +200,7 @@ Sprite.prototype.isLoaded = function() {
 
 // Step methods
 Sprite.prototype.showCostume = function(costume) {
+    if(this.currentCostumeIndex === costume) return;
     if (costume < 0) {
         costume += this.costumes.length;
     }

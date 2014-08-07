@@ -200,10 +200,10 @@ Sprite.prototype.isLoaded = function() {
 
 // Step methods
 Sprite.prototype.showCostume = function(costume) {
-    if(this.currentCostumeIndex === costume) return;
     if (costume < 0) {
         costume += this.costumes.length;
     }
+    if(this.currentCostumeIndex === costume) return;
     if (!this.textures[costume]) {
         this.currentCostumeIndex = 0;
     }
@@ -304,7 +304,11 @@ Sprite.prototype.updateVisible = function() {
 
 Sprite.prototype.updateTransform = function()
 {
+    this.needsUpdate = true;
+}
 
+Sprite.prototype.renderTransform = function()
+{
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
 
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
@@ -319,39 +323,27 @@ Sprite.prototype.updateTransform = function()
         // sign to the X scale.
     }
 
-    // if(!(this.oldTransformData.drawX == drawX && this.oldTransformData.drawY == drawY &&
-    //      this.oldTransformData.rotation == this.rotation && this.oldTransformData.scale == this.scale
-    //      && this.oldTransformData.scaleXprepend == scaleXprepend && this.oldTransformData.resolution == resolution))
-    // {   
-
-        this.mesh.style.transform =                    'translatex(' + drawX + 'px) ' +
+        this.mesh.style.transform = 'translatex(' + drawX + 'px) ' +
                     'translatey(' + drawY + 'px) ' +
                     'rotate(' + this.rotation + 'deg) ' +
                     'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')';
         
-        this.mesh.style.mozTransform =                    'translatex(' + drawX + 'px) ' +
+        this.mesh.style.mozTransform = 'translatex(' + drawX + 'px) ' +
                     'translatey(' + drawY + 'px) ' +
                     'rotate(' + this.rotation + 'deg) ' +
                     'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  this.scale / resolution + ')';
         
-        this.mesh.style.webkitTransform =                    'translatex(' + drawX + 'px) ' +
+        this.mesh.style.webkitTransform = 'translatex(' + drawX + 'px) ' +
                     'translatey(' + drawY + 'px) ' +
                     'rotate(' + this.rotation + 'deg) ' +
                     'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')';
 
-        // this.oldTransformData = { "drawX": drawX, "drawY": drawY, "rotation": this.rotation, "scale": this.scale, "scaleXprepend": scaleXprepend, "resolution": resolution};
-    // }
-
-    // Transform origin is constant, if it's not been added, add it.
-    if(this.mesh.style.transformOrigin)
-    {
-        
-            this.mesh.style.webkitTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
-            this.mesh.style.mozTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
-            this.mesh.style.msTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
-            this.mesh.style.oTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
-            this.mesh.style.transformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
-    }
+       
+        this.mesh.style.webkitTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+        this.mesh.style.mozTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+        this.mesh.style.msTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+        this.mesh.style.oTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
+        this.mesh.style.transformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
 
     // Don't forget to update the talk bubble.
     if (this.talkBubble) {
@@ -360,6 +352,7 @@ Sprite.prototype.updateTransform = function()
         this.talkBubble[0].style.top = xy[1] + 'px';
     }
 
+    this.needsUpdate = false;
     this.updateLayer();
 };
 
@@ -454,6 +447,7 @@ Sprite.prototype.bindDoAskButton = function() {
 };
 
 Sprite.prototype.setXY = function(x, y) {
+    if(this.scratchX == x && this.scratchY == y) return;
     this.scratchX = x;
     this.scratchY = y;
     this.updateTransform();
@@ -476,6 +470,7 @@ Sprite.prototype.setDirection = function(d) {
     } else {
         rotation = 0;
     }
+    if(this.rotation === rotation) return;
     this.rotation = rotation;
     this.updateTransform();
 };

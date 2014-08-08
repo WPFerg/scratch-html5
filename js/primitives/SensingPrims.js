@@ -116,16 +116,15 @@ var stageColorHitTest = function(target, color) {
     g = (color >> 8 & 255);
     b = (color & 255);
 
-    var targetCanvas = document.createElement('canvas');
-    targetCanvas.width = 480;
-    targetCanvas.height = 360;
-    var targetTester = targetCanvas.getContext('2d');
-    target.stamp(targetTester, 100);
+    var targetRectangle = target.getRect();
+
+    // Removed target tester and stamped the sprite directly onto the stage canvas, using destination-in so only the sprite appears
 
     var stageCanvas = document.createElement('canvas');
-    stageCanvas.width = 480;
-    stageCanvas.height = 360;
+    stageCanvas.width = targetRectangle.width;
+    stageCanvas.height = targetRectangle.height;
     var stageContext = stageCanvas.getContext('2d');
+    stageContext.translate(-targetRectangle.left, -targetRectangle.top);
 
     // [SCOTT LOGIC] - type checking of not undefined and of sprite. Checking sprite is set to visible.
     $.each(runtime.sprites, function(i, sprite) {
@@ -138,11 +137,13 @@ var stageColorHitTest = function(target, color) {
         }
     });
 
+    stageContext.globalCompositeOperation = "destination-in";
+    target.stamp(stageContext, 100);
+
     var hitData = stageContext.getImageData(0, 0, stageCanvas.width, stageCanvas.height).data;
-    var meshData = targetTester.getImageData(0, 0, targetCanvas.width, targetCanvas.height).data;
-    var pxCount = meshData.length;
+    var pxCount = hitData.length;
     for (var i = 0; i < pxCount; i += 4) {
-        if (meshData[i+3] > 0 && hitData[i] == r && hitData[i+1] == g && hitData[i+2] == b)
+        if (hitData[i+3] > 0 && hitData[i] == r && hitData[i+1] == g && hitData[i+2] == b)
         {
             return true;
         }

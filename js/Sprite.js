@@ -531,6 +531,8 @@ Sprite.prototype.getRect = function() {
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
 
     var cImg = this.textures[this.currentCostumeIndex];
+    var cImgWidth = cImg.width;
+    var cImgHeight = cImg.height;
 
     // [SCOTT LOGIC] - Calculate rotationCentres for later use
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;
@@ -539,7 +541,7 @@ Sprite.prototype.getRect = function() {
     var x = 240 + this.scratchX - rotationCenterX * this.scale / resolution;
     var y = 180 - this.scratchY - rotationCenterY * this.scale / resolution;
 
-     var myBox = new Rectangle(x, y, cImg.width * this.scale / resolution, cImg.height * this.scale / resolution);
+     var myBox = new Rectangle(x, y, cImgWidth * this.scale / resolution, cImgHeight * this.scale / resolution);
     //var myBox = new Rectangle(x, y, cImg.width, cImg.height);
 
     // Check rotation style
@@ -549,8 +551,8 @@ Sprite.prototype.getRect = function() {
         // Set values of shape as defautl before rotation
         var newLeft = x;
         var newTop = y;
-        var newRight = x + cImg.width * this.scale / resolution;
-        var newBottom = y + cImg.height * this.scale / resolution;
+        var newRight = x + cImgWidth * this.scale / resolution;
+        var newBottom = y + cImgHeight * this.scale / resolution;
 
         // Calculate center for transformation
         var relativeRotationX = x + rotationCenterX * this.scale / resolution;
@@ -642,7 +644,7 @@ Sprite.prototype.stamp = function(canvas, opacity) {
     canvas.translate(drawX, drawY);
     canvas.scale(this.scale / resolution, this.scale / resolution);
     canvas.rotate(this.rotation * Math.PI / 180.0); //testing purposes
-    canvas.drawImage(this.mesh, -rotationCenterX, -rotationCenterY, drawWidth, drawHeight);
+    canvas.drawImage(this.mesh, -rotationCenterX, -rotationCenterY);
     canvas.restore();
     canvas.globalAlpha = 1;
 };

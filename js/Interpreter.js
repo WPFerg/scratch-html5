@@ -159,8 +159,8 @@ Interpreter.prototype.stepThreads = function() {
                 threadStopped = true;
             }
             if(!this.isWaiting) runnableCount++;
-            var sprite = this.activeThread.target;
-            if(sprite.needsUpdate)
+            var sprite = (this.activeThread ? this.activeThread.target : null);
+            if(sprite && sprite.needsUpdate)
             {
                 sprite.renderTransform();
             }

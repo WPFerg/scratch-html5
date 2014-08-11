@@ -37,6 +37,7 @@ var Runtime = function() {
     this.projectLoaded = false;
     this.nextCloneID = 0;
     this.nextThreadID = 0;
+    this.stageClicked = true;
 };
 
 Runtime.prototype.requestThreadID = function() {

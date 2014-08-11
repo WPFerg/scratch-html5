@@ -197,7 +197,8 @@ LooksPrims.prototype.createCloneOf = function(b) {
 
     // Create object clone
     var cloneSprite = null;
-    for (var count = 0; count < runtime.sprites.length; count ++)
+    var spriteCount = runtime.sprites.length;
+    for (var count = 0; count < spriteCount; count ++)
     {
         if (runtime.sprites[count].objName == interp.arg(b, 0))
         {
@@ -242,6 +243,8 @@ LooksPrims.prototype.deleteClone = function(b) {
 
                 // Remove all DOM elements
                 runtime.sprites[count].mesh.remove();
+                if (typeof(runtime.sprites[count].talkBubble) !== 'undefined') { runtime.sprites[count].talkBubble.remove(); }
+                if (typeof(runtime.sprites[count].askInput) !== 'undefined') { runtime.sprites[count].askInput.remove(); }
 
                 // Remove references to sprite
                 runtime.sprites[count] = null;

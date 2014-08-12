@@ -147,7 +147,7 @@ Interpreter.prototype.stepThreads = function() {
     this.doRedraw = false;
     if (this.threads.length == 0) return;
 
-    while ((this.currentMSecs - startTime) < this.WorkTime && !this.doRedraw && this.runnableCount !== 0) {
+    while ((this.currentMSecs - startTime) < this.WorkTime && !this.doRedraw) {
         var threadStopped = false;
         var runnableCount = 0;
 
@@ -175,6 +175,7 @@ Interpreter.prototype.stepThreads = function() {
             this.threads = newThreads;
             if (this.threads.length == 0) return;
         }
+        if(runnableCount == 0) return;
         this.currentMSecs = this.timer.time();
     }
 };

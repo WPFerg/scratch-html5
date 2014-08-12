@@ -382,8 +382,11 @@ Sprite.prototype.updateTransform = function()
     this.needsUpdate = true;
 }
 
+<<<<<<< HEAD
+=======
 Sprite.prototype.renderTransform = function()
 {
+>>>>>>> 433b287
     var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
 
     var rotationCenterX = this.costumes[this.currentCostumeIndex].rotationCenterX;

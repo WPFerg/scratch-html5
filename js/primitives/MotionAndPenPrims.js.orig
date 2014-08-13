@@ -250,6 +250,7 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
     var spriteRect = s.getRect();
 
     // Create a canvas for the sprite, stamp it on, perform colour operations per pixel and put that on the canvas.
+<<<<<<< HEAD
     var width = s.mesh.width,
         height = s.mesh.height;
     var canvas = document.createElement("canvas");
@@ -258,13 +259,27 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
 
     var ctx = canvas.getContext("2d");
     ctx.drawImage(s.mesh, 0, 0, width, height);
+=======
+    var canvas = document.createElement("canvas");
+    canvas.width = s.mesh.width;
+    canvas.height = s.mesh.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.save();
+    ctx.translate(-spriteRect.left, -spriteRect.top);
+    s.stamp(ctx, 100);
+>>>>>>> Added hue to the stamp block. Issue https://github.com/WPFerg/scratch-html5/issues/24 PID 24941285
 
     // Stamp the colour onto it.
 
     var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     var canvasData = canvasImageData.data;
     var canvasDataLength = canvasData.length;
+<<<<<<< HEAD
 
+=======
+    console.log(s.filters.color);
+>>>>>>> Added hue to the stamp block. Issue https://github.com/WPFerg/scratch-html5/issues/24 PID 24941285
     for(var i = 0; i < canvasDataLength; i += 4)
     {
         // Convert the RGB channels to a number so the Colour class can use
@@ -284,6 +299,10 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
 
     ctx.putImageData(canvasImageData, 0, 0);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Added hue to the stamp block. Issue https://github.com/WPFerg/scratch-html5/issues/24 PID 24941285
     // Draw the canvas to the correct place on-screen.
     // Copied from Sprite.stamp (POSITIONS CORRECTLY)
 
@@ -305,10 +324,12 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
     runtime.stage.lineCache.save();
     runtime.stage.lineCache.translate(drawX, drawY);
     runtime.stage.lineCache.scale(s.scale / resolution, s.scale / resolution);
+<<<<<<< HEAD
+=======
+    runtime.stage.lineCache.rotate(s.rotation * Math.PI / 180.0); //testing purposes
+>>>>>>> Added hue to the stamp block. Issue https://github.com/WPFerg/scratch-html5/issues/24 PID 24941285
     runtime.stage.lineCache.drawImage(canvas, -rotationCenterX, -rotationCenterY);
     runtime.stage.lineCache.restore();
-    runtime.stage.lineCache.globalAlpha = 1;
-
     runtime.stage.lineCache.globalAlpha = 1;
 
 };

@@ -38,7 +38,6 @@ var Thread = function(block, target) {
     this.ID = runtime.requestThreadID(); // distinguishes blocks from eachother and useful in debugging
     this.nextBlock = block; // next block to run; null when thread is finished
     this.firstBlock = block;
-    this.paramNestBlockIndex = -1; // used to determine the nested block recusion level for which a parameter is being called
     this.stack = []; // stack of enclosing control structure blocks
     this.target = target; // target object running the thread
     this.tmp = null; // used for thread operations like Timer
@@ -46,42 +45,6 @@ var Thread = function(block, target) {
     this.firstTime = true;
     this.paused = false;
 };
-
-Thread.prototype.getParamNestBlock = function() {
-
-    // Determine correct result
-    if (this.paramNestBlockIndex == -1) { return null; }
-    if (this.paramNestBlockIndex == this.stack.length) { return this.firstBlock; }
-    if (this.paramNestBlockIndex >= 0) { return this.stack[this.paramNestBlockIndex].firstBlock; }
-
-    console.log('ERROR : paramNestBlockIndex does not apply to any block.');
-    return null;
-
-}
-
-Thread.prototype.stepOutParamNest = function() {
-
-    // Find next valid param block
-    var workingIndex = this.paramNestBlockIndex - 1;
-    while (this.stack.length > 0 &&
-           workingIndex > 0 &&
-           ( typeof(this.stack[workingIndex]) != 'object' ||
-             this.stack[workingIndex].constructor != Thread) )
-    {
-        workingIndex = workingIndex - 1;
-    }
-    
-    if (this.stack.length > 0 && workingIndex >= 0)
-    {
-        this.paramNestBlockIndex = workingIndex;
-        return workingIndex;
-    } else {
-        console.log('ERROR : Trying to recurse back up to a higher level where no higher level thread exists.');
-        this.paramNestBlockIndex = -1;
-        return -1;
-    }
-
-}
 
 var Interpreter = function() {
     // Interpreter state

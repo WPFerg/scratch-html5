@@ -114,24 +114,24 @@ Primitives.prototype.primMathFunction = function(b) {
 Primitives.prototype.callProcedure = function(b) {
 
     // Method to parse parameters
-    function parseParams(Block) {
-        var result = [];
-        if (Block.args.length > 1)
-        {
-            for (var count = 1; count < Block.args.length; count ++)
-            {
-                result.push(Block.args[count]);
-            }
-        }
-        return result;
-    }
+    // function parseParams(Block) {
+    //     var result = [];
+    //     if (Block.args.length > 1)
+    //     {
+    //         for (var count = 1; count < Block.args.length; count ++)
+    //         {
+    //             result.push(Block.args[count]);
+    //         }
+    //     }
+    //     return result;
+    // }
 
     // Gather thread information
     var targetSprite = interp.activeThread.target;
     var currentThreadState = interp.activeThread;
 
     // Get list of paremters passed
-    var passedParams = parseParams(b);
+    // var passedParams = parseParams(b);
 
     // Find activeThread in threads and halt it
     var newThreads = [];
@@ -151,11 +151,40 @@ Primitives.prototype.callProcedure = function(b) {
         if ( (targetSprite.stacks[count].op == "procDef") && (interp.arg(b, 0) == interp.arg(targetSprite.stacks[count], 0)) )
         {
 
+            var alternateParamBlock = new Block(['']);
+            alternateParamBlock.isLoop = targetSprite.stacks[count].args[2].isLoop;
+            alternateParamBlock.nextBlock = targetSprite.stacks[count].nextBlock;
+            alternateParamBlock.primFcn = targetSprite.stacks[count].args[2].primFcn;
+            alternateParamBlock.subStack2 = targetSprite.stacks[count].args[2].subStack2;
+            alternateParamBlock.substack = targetSprite.stacks[count].args[2].substack;
+            alternateParamBlock.tmp = targetSprite.stacks[count].args[2].tmp;
+
+            // Make sure params are copied
+            if (b.args.length > 1)
+            {
+                if (typeof(b.args[1]) == 'object')
+                {
+                    alternateParamBlock.op = b.args[1].primFcn(b.args[1]);
+                } else {
+                    alternateParamBlock.op = b.args[1];
+                }
+                for (var count2 = 1; count2 < b.args.length; count2 ++)
+                {
+                    if (typeof(b.args[count2]) == 'object')
+                    {
+                        alternateParamBlock.args[count2-1] = b.args[count2].primFcn(b.args[count2]);
+                    } else {
+                        alternateParamBlock.args[count2-1] = b.args[count2];
+                    }
+                }
+
+            }
+
             // Start thread 
             interp.startThread(targetSprite.stacks[count], targetSprite);
 
             // Generate parameters and save next block link
-            var paramParsedFirstBlock = new Block(passedParams);
+            //var paramParsedFirstBlock = new Block(passedParams);
             var nextBlockLink = interp.activeThread.firstBlock.nextBlock;
 
             var alternateFirstBlock = new Block(['']);
@@ -168,30 +197,6 @@ Primitives.prototype.callProcedure = function(b) {
             alternateFirstBlock.subStack2 = targetSprite.stacks[count].subStack2;
             alternateFirstBlock.substack = targetSprite.stacks[count].substack;
             alternateFirstBlock.tmp = targetSprite.stacks[count].tmp;
-
-            var alternateParamBlock = new Block(['']);
-            alternateParamBlock.isLoop = targetSprite.stacks[count].args[2].isLoop;
-            alternateParamBlock.nextBlock = targetSprite.stacks[count].nextBlock;
-            alternateParamBlock.primFcn = targetSprite.stacks[count].args[2].primFcn;
-            alternateParamBlock.subStack2 = targetSprite.stacks[count].args[2].subStack2;
-            alternateParamBlock.substack = targetSprite.stacks[count].args[2].substack;
-            alternateParamBlock.tmp = targetSprite.stacks[count].args[2].tmp;
-
-            // Make sure params are copied
-            if (passedParams.length > 0)
-            {
-                alternateParamBlock.op = passedParams[0];
-                for (var count2 = 1; count2 < passedParams.length; count2 ++)
-                {
-                    if (passedParams[count2] == 'object')
-                    {
-                        alternateParamBlock.args[count2-1] = passedParams[count2].primFcn(passedParams[count2]);
-                    } else {
-                        alternateParamBlock.args[count2-1] = passedParams[count2];
-                    }
-                }
-
-            }
 
             // Link two alternate blocks
             alternateFirstBlock.args.push(targetSprite.stacks[count].args[0]);
@@ -271,28 +276,14 @@ Primitives.prototype.getParam = function(b) {
         }
     }
 
-    // Update param list block
-    interp.activeThread.paramNestBlockIndex = -1; // tempory fix
-    if (interp.activeThread.paramNestBlockIndex == -1)
-    {
-        interp.activeThread.paramNestBlockIndex = interp.activeThread.stack.length;
-    } else {
-        interp.activeThread.stepOutParamNest();
-    }
-
-    var debugString = 'T' + interp.activeThread.paramNestBlockIndex + ' ~ ' + interp.activeThread.firstBlock.args[0].split(' ')[0] + ' > '
-                      + interp.activeThread.getParamNestBlock().args[0].split(' ')[0] + '[' + interp.arg(b, 0);
-
     // Get the suspected parameter
-    b = retrieveParameter(b, interp.activeThread.getParamNestBlock());
+    b = retrieveParameter(b, interp.activeThread.firstBlock);
 
     // Determine if any recusrive call is needed
     if (typeof(b) == 'object' && typeof(b) !== 'number')
     {
         return (b.primFcn(b));
     } else {
-        interp.activeThread.paramNestBlockIndex = -1;
-        console.log(debugString + ']  :|:  ' + b);
         return b;
     }
 

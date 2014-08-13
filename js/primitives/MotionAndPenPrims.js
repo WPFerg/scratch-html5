@@ -246,7 +246,68 @@ MotionAndPenPrims.prototype.primChangePenSize = function(b) {
 
 MotionAndPenPrims.prototype.primStamp = function(b) {
     var s = interp.targetSprite();
-    s.stamp(runtime.stage.lineCache, 100);
+    var spriteRect = s.getRect();
+
+    // Create a canvas for the sprite, stamp it on, perform colour operations per pixel and put that on the canvas.
+    var width = s.mesh.width,
+        height = s.mesh.height;
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(s.mesh, 0, 0, width, height);
+
+    // Stamp the colour onto it.
+
+    var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var canvasData = canvasImageData.data;
+    var canvasDataLength = canvasData.length;
+
+    for(var i = 0; i < canvasDataLength; i += 4)
+    {
+        // Convert the RGB channels to a number so the Colour class can use
+        var hsv = Color.rgb2hsv((canvasData[i] << 16) | (canvasData[i+1] << 8) | canvasData[i+2]);
+        hsv[0] += s.filters.color * 1.8;
+        hsv[1] /= 1.3;
+
+        var rgb = Color.fromHSV(hsv[0], hsv[1], hsv[2]);
+        var r = ((rgb >> 16) & 255);
+        var g = ((rgb >> 8) & 255);
+        var b = (rgb & 255);
+
+        canvasData[i] = r;
+        canvasData[i+1] = g;
+        canvasData[i+2] = b;
+    }
+
+    ctx.putImageData(canvasImageData, 0, 0);
+
+    // Draw the canvas to the correct place on-screen.
+    // Copied from Sprite.stamp (POSITIONS CORRECTLY)
+
+    var drawWidth = s.textures[s.currentCostumeIndex].width;
+    var drawHeight = s.textures[s.currentCostumeIndex].height;
+
+    var drawX = s.scratchX + (480 / 2);
+    var drawY = -s.scratchY + (360 / 2);
+
+    // [SCOTT LOGIC] - Need to calculate resolution for use later
+    var resolution = s.costumes[s.currentCostumeIndex].bitmapResolution || 1;
+
+    // [SCOTT LOGIC] - Calculate rotationCentres for later use
+    var rotationCenterX = s.costumes[s.currentCostumeIndex].rotationCenterX;
+    var rotationCenterY = s.costumes[s.currentCostumeIndex].rotationCenterY;
+
+    // [SCOTT LOGIC] - Perform translation before scaling object by scale over resolution.
+    //                 Remove -drawWidth/2 and -drawHeight/2 and replace with rotationCentres
+    runtime.stage.lineCache.save();
+    runtime.stage.lineCache.translate(drawX, drawY);
+    runtime.stage.lineCache.scale(s.scale / resolution, s.scale / resolution);
+    runtime.stage.lineCache.drawImage(canvas, -rotationCenterX, -rotationCenterY);
+    runtime.stage.lineCache.restore();
+    runtime.stage.lineCache.globalAlpha = 1;
+
 };
 
 MotionAndPenPrims.prototype.primStampTransparent = function(b) {

@@ -113,29 +113,14 @@ Primitives.prototype.primMathFunction = function(b) {
 
 Primitives.prototype.callProcedure = function(b) {
 
-    // Method to parse parameters
-    // function parseParams(Block) {
-    //     var result = [];
-    //     if (Block.args.length > 1)
-    //     {
-    //         for (var count = 1; count < Block.args.length; count ++)
-    //         {
-    //             result.push(Block.args[count]);
-    //         }
-    //     }
-    //     return result;
-    // }
-
     // Gather thread information
     var targetSprite = interp.activeThread.target;
     var currentThreadState = interp.activeThread;
 
-    // Get list of paremters passed
-    // var passedParams = parseParams(b);
-
     // Find activeThread in threads and halt it
     var newThreads = [];
-    for (var count = 0; count < interp.threads.length; count ++)
+    var threadCount = interp.threads.length;
+    for (var count = 0; count < threadCount; count ++)
     {
         if (interp.threads[count] != interp.activeThread)
         {
@@ -146,7 +131,8 @@ Primitives.prototype.callProcedure = function(b) {
 
     // Locate stack to call in sprite, clone and apply new parameters in thread
     var stackToCall = null;
-    for (var count = 0; count < targetSprite.stacks.length; count ++)
+    var stackCount = targetSprite.stacks.length;
+    for (var count = 0; count < stackCount; count ++)
     {
         if ( (targetSprite.stacks[count].op == "procDef") && (interp.arg(b, 0) == interp.arg(targetSprite.stacks[count], 0)) )
         {
@@ -168,7 +154,8 @@ Primitives.prototype.callProcedure = function(b) {
                 } else {
                     alternateParamBlock.op = b.args[1];
                 }
-                for (var count2 = 1; count2 < b.args.length; count2 ++)
+                var argCount = b.args.length;
+                for (var count2 = 1; count2 < argCount; count2 ++)
                 {
                     if (typeof(b.args[count2]) == 'object')
                     {
@@ -235,13 +222,14 @@ Primitives.prototype.getParam = function(b) {
     {
         if (ThreadStartBlock.args.length == 4)
         {
-            if (ThreadStartBlock.args[1].args.length > 0 || typeof(ThreadStartBlock.args[1].op) != 'undefined')
+            var argCount = ThreadStartBlock.args[1].args.length;
+            if (argCount > 0 || typeof(ThreadStartBlock.args[1].op) != 'undefined')
             {
                 if (ThreadStartBlock.args[1].op == ParamName)
                 {
                     return 0;
                 } else {
-                    for (var count = 0; count < ThreadStartBlock.args[1].args.length; count ++)
+                    for (var count = 0; count < argCount; count ++)
                     {
                         if (ThreadStartBlock.args[1].args[count] == ParamName)
                         {
@@ -280,11 +268,14 @@ Primitives.prototype.getParam = function(b) {
     b = retrieveParameter(b, interp.activeThread.firstBlock);
 
     // Determine if any recusrive call is needed
-    if (typeof(b) == 'object' && typeof(b) !== 'number')
-    {
-        return (b.primFcn(b));
-    } else {
-        return b;
-    }
+    // if (typeof(b) == 'object' && typeof(b) !== 'number')
+    // {
+    //     return (b.primFcn(b));
+    // } else {
+    //     return b;
+    // }
+
+    // No recursive calls should be needed now absolute values are stored in params
+    return b;
 
 }

@@ -99,6 +99,19 @@ IO.prototype.makeObjects = function() {
     runtime.stage = new Stage(this.data);
     runtime.stage.attach(runtime.scene);
     runtime.stage.attachPenLayer(runtime.scene);
+
+    // Apply scaling to all stage costumes
+    var resolution = 0;
+    var scale = runtime.stage.scale;
+    var textureCount = runtime.stage.textures.length;
+    for (var count = 0; count < textureCount; count ++)
+    {
+        resolution = runtime.stage.costumes[count].bitmapResolution || 1
+        runtime.stage.textures[count].style.transform = 'translatex(-240px) translatey(-180px) scaleX(' + (scale / resolution) + ') scaleY(' +  (scale / resolution) + ')';
+        runtime.stage.textures[count].style.mozTransform = 'translatex(-240px) translatey(-180px) scaleX(' + (scale / resolution) + ') scaleY(' +  (scale / resolution) + ')';
+        runtime.stage.textures[count].style.webkitTransform = 'translatex(-240px) translatey(-180px) scaleX(' + (scale / resolution) + ') scaleY(' +  (scale / resolution) + ')';
+    }
+
     runtime.stage.loadSounds();
     // Create the sprites and watchers
     function createObj(obj, sprite) {

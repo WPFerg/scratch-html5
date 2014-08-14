@@ -149,21 +149,19 @@ Primitives.prototype.callProcedure = function(b) {
             if (b.args.length > 1)
             {
                 if (typeof(b.args[1]) == 'object')
-                var argCount = b.args.length;
-                for (var count2 = 1; count2 < argCount; count2 ++)
                 {
                     alternateParamBlock.op = b.args[1].primFcn(b.args[1]);
                 } else {
                     alternateParamBlock.op = b.args[1];
                 }
                 var argCount = b.args.length;
-                for (var count2 = 1; count2 < argCount; count2 ++)
+                for (var count2 = 2; count2 < argCount; count2 ++)
                 {
                     if (typeof(b.args[count2]) == 'object')
                     {
-                        alternateParamBlock.args[count2-1] = b.args[count2].primFcn(b.args[count2]);
+                        alternateParamBlock.args[count2-2] = b.args[count2].primFcn(b.args[count2]);
                     } else {
-                        alternateParamBlock.args[count2-1] = b.args[count2];
+                        alternateParamBlock.args[count2-2] = b.args[count2];
                     }
                 }
 

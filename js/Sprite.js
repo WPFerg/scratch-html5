@@ -216,7 +216,7 @@ Sprite.prototype.attach = function(scene) {
     this.updateVisible();
     this.updateTransform();
 
-    if (! this.isStage) {
+    if (!this.isStage) {
         this.talkBubble = $('<div class="bubble-container"></div>');
         this.talkBubble.css('display', 'none');
         this.talkBubbleBox = $('<div class="bubble"></div>');
@@ -237,6 +237,9 @@ Sprite.prototype.attach = function(scene) {
 
     runtime.scene.append(this.talkBubble);
     runtime.scene.append(this.askInput);
+
+    // Process positional, rotational and scaling transformations
+    this.renderTransform();
 };
 
 // Load sounds from the server and buffer them
@@ -412,7 +415,6 @@ Sprite.prototype.renderTransform = function()
                     'translatey(' + drawY + 'px) ' +
                     'rotate(' + this.rotation + 'deg) ' +
                     'scaleX(' + scaleXprepend + (this.scale / resolution) + ') scaleY(' +  (this.scale / resolution) + ')';
-
        
         this.mesh.style.webkitTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';
         this.mesh.style.mozTransformOrigin =  rotationCenterX + 'px ' + rotationCenterY + 'px';

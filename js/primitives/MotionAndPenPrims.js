@@ -249,22 +249,21 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
     var spriteRect = s.getRect();
 
     // Create a canvas for the sprite, stamp it on, perform colour operations per pixel and put that on the canvas.
+    var width = s.mesh.width,
+        height = s.mesh.height;
     var canvas = document.createElement("canvas");
-    canvas.width = spriteRect.width;
-    canvas.height = spriteRect.height;
+    canvas.width = width;
+    canvas.height = height;
 
     var ctx = canvas.getContext("2d");
-    ctx.save();
-    ctx.translate(-spriteRect.left, -spriteRect.top);
-    s.stamp(ctx, 100);
-    ctx.restore();
+    ctx.drawImage(s.mesh, 0, 0, width, height);
 
     // Stamp the colour onto it.
 
     var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     var canvasData = canvasImageData.data;
     var canvasDataLength = canvasData.length;
-    console.log(s.filters.color);
+
     for(var i = 0; i < canvasDataLength; i += 4)
     {
         // Convert the RGB channels to a number so the Colour class can use
@@ -283,7 +282,6 @@ MotionAndPenPrims.prototype.primStamp = function(b) {
     }
 
     ctx.putImageData(canvasImageData, 0, 0);
-
 
     // Draw the canvas to the correct place on-screen.
     // Copied from Sprite.stamp (POSITIONS CORRECTLY)

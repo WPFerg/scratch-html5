@@ -128,7 +128,7 @@ var stageColorHitTest = function(target, color) {
 
     // [SCOTT LOGIC] - type checking of not undefined and of sprite. Checking sprite is set to visible.
     $.each(runtime.sprites, function(i, sprite) {
-        if (sprite != target && sprite !== 'undefined' && typeof(sprite) == 'object' && sprite.constructor == Sprite)
+        if (sprite != target && sprite !== 'undefined' && typeof(sprite) == 'object' && sprite.constructor == Sprite && sprite.getRect().intersects(targetRectangle))
         {
             if (sprite.visible == true)
             {
@@ -137,6 +137,7 @@ var stageColorHitTest = function(target, color) {
         }
     });
 
+    // Change the composite operation so the canvas only has data within the target's shape 
     stageContext.globalCompositeOperation = "destination-in";
     target.stamp(stageContext, 100);
 

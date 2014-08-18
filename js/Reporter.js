@@ -126,6 +126,7 @@ Reporter.prototype.update = function() {
     }
     newValue = '' + newValue;
     this.valueEl.html(newValue);
+    this.valueEl[0].style.color = (this.valueEl[0].style.color === "rgb(255, 255, 255)") ? "rgb(254, 254, 254)" : "rgb(255, 255, 255)";
     if (this.mode == 3) {
         this.slider.val(Number(newValue));
     }
